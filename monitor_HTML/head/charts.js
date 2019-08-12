@@ -385,7 +385,7 @@ function meminfolist(){
 	var el=$("#meminfo_select").multiselect({
 		multiple: false,
 		noneSelectedText: "选择进程",
-		minWidth: 350,
+		minWidth: 560,
 		height: 140,
 		selectedList: 1,
 	}).multiselectfilter({
@@ -424,7 +424,8 @@ function meminfo(a){
 		},
 		xAxis: {
 			title: {text: 'Uptime(s)'},
-			floor: data[0][0][0]
+			floor: data[0][0][0],
+			max: data[0][0][data[0][0].length-1]
 		},
 		yAxis: [
 			{labels: {format: '{value}M'},title: {text:'memory(M)'}},
@@ -480,7 +481,7 @@ function meminfo2list(){
 	var el=$("#meminfo2_select").multiselect({
 		multiple: false,
 		noneSelectedText: "选择进程",
-		minWidth: 350,
+		minWidth: 560,
 		height: 140,
 		selectedList: 1,
 	}).multiselectfilter({
@@ -519,7 +520,8 @@ function meminfo2(a){
 		},
 		xAxis: {
 			title: {text: 'Uptime(s)'},
-			floor: data[0][0][0]
+			floor: data[0][0][0],
+			max: data[0][0][data[0][0].length-1]
 		},
 		yAxis: {
 			labels: {format: '{value}M'},
@@ -576,6 +578,7 @@ function fpsWindows(){
 		multiple: false,
 		noneSelectedText: "选择窗口",
 		minWidth: 350,
+		maxWidth: 1000,
 		height: 110,
 		selectedList: 1,
 	}).multiselectfilter({
@@ -723,6 +726,7 @@ function thermallist(){
 		multiple: false,
 		noneSelectedText: "选择sensor",
 		minWidth: 350,
+		maxWidth: 1000,
 		height: 110,
 		selectedList: 1,
 	}).multiselectfilter({

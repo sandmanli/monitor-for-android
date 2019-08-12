@@ -209,15 +209,34 @@ echo "Loop:$4,uptime,Date_Time,DisplayID,FocusedWindow,FocusedApplication,Flags,
 
 CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" 'END{R="uptime,0:"NR;for(i=1;i<NR;i++)R=R","i;print R>csv;print NR}' /sys/devices/system/cpu/cpu*/online`
 
-
 thermal_path=""
 for i in `ls /sys/devices/virtual/thermal/thermal_zone*/type`;do
-	if [ ! -z "`cat $i 2>/dev/null`" ];then
-		thermal_path=$thermal_path" "$i
+	zone=`echo $i|$bb awk '{split($0,N,"/");print N[6]}'`
+	check=`cat $i 2>/dev/null`
+	if [ ! -z "$check" ];then
+		title=$zone"("$check")"
+	else
+		title=$zone"(unknown)"
+	fi
+	check=`cat /sys/devices/virtual/thermal/$zone/temp 2>/dev/null`
+	if [ ! -z "$check" ];then
+		if [ -z "$thermal_path" ];then
+			thermal_path=/sys/devices/virtual/thermal/$zone/temp
+			thermal_type="uptime,"$title
+			thermal_zones=$zone
+		else
+			thermal_path=$thermal_path" "/sys/devices/virtual/thermal/$zone/temp
+			thermal_type=$thermal_type","$title
+			thermal_zones=$thermal_zones" "$zone
+		fi
 	fi
 done
-TZs=`$bb awk -v csv="$monitor/thermal.csv" '{split(FILENAME,N,"/");printf N[6]" "$0" ";if(R=="")R="uptime,"substr(N[6],13)":"$0;else R=R","substr(N[6],13)":"$0}END{print R>csv}' $thermal_path`
-thermal_path=`echo $thermal_path|$bb sed 's/type/temp/g'`
+thermal_type=`echo $thermal_type|$bb sed 's/thermal_zone//g'`
+echo $thermal_type >$monitor/thermal.csv
+unset zone
+unset check
+unset title
+unset thermal_type
 
 #FPS
 if [ ! -z "$2" ];then
@@ -230,7 +249,7 @@ while true;do
 	#cpu freq
 	$bb awk -v cpus=$CPUS -v time=$uptime -v csv="$monitor/cur_freq.csv" '{split(FILENAME,N,"/");r[substr(N[6],4)]=$0/1000}END{R=r[0];for(i=1;i<cpus;i++)R=R","r[i];print time","R >>csv}' /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
 	#thermal_zone
-	$bb awk -v time=$uptime -v TZs="$TZs" -v csv="$monitor/thermal.csv" 'BEGIN{split(TZs,tmp," ")}{split(FILENAME,N,"/");r[N[6]]=$0}END{for(i in tmp){if(i%2==0){if(R=="")R=r[tmp[i-1]]+0;else R=R","r[tmp[i-1]]+0}};print time","R >>csv}'  $thermal_path
+	$bb awk -v time=$uptime -v TZs="$thermal_zones" -v csv="$monitor/thermal.csv" 'BEGIN{split(TZs,tmp," ")}{split(FILENAME,N,"/");r[N[6]]=$0}END{for(i in tmp){if(R=="")R=r[tmp[i]]+0;else R=R","r[tmp[i]]+0};print time","R >>csv}'  $thermal_path
 	#windows.csv
 	dumpsys input|$bb grep " name="|$bb awk -v OFS="," -v loop=$loop -v time=$uptime -v date="$date_time" -v csv="$monitor/windows.csv" '{if($1=="FocusedApplication:"){A=$6}else{W=substr($4,1,length($4)-3);if($9=="visible=true,"){D=substr($5,11,length($5)-11);if(D>0)D=1;for(i=11;i<=NF;i++){if(substr($i,1,5)=="flags")F=substr($i,7,length($i)-7);if(substr($i,1,4)=="type")T=substr($i,6,length($12)-6);if(substr($i,1,5)=="frame"){S=substr($i,7,length($i)-7);gsub("\]","",S);gsub("\\[",",",S)};if(substr($i,1,8)=="ownerPid")P=substr($i,10,length($i)-10);if(substr($i,1,8)=="ownerUid")U=substr($i,10,length($i)-10)};if($7=="hasFocus=true,"){if(match(W,"/")){split(W,A,"/");gsub(A[1],"",A[2]);A=A[1]"/"A[2]};print loop,time,date,D,W,A,F,T,P,U,"\""S"\"" >>csv}}}}'
 	#btm.csv

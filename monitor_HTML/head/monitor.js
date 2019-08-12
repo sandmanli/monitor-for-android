@@ -211,23 +211,6 @@ function getmeminfo(a){
 				}
 			}else{
 				if(data[3][i].length == 3){
-					if(i!=0){
-						pss.push(null);
-						if(data[0] == 1){
-							NHS.push(null);
-							NHA.push(null);
-							NHF.push(null);
-							DHP.push(null);
-							DHS.push(null);
-							DHA.push(null);
-							DHF.push(null);
-							Views.push(null)
-							Threads.push(null)
-						}
-						if(type == 1){
-							FD.push(null)
-						}
-					}
 					pss.push({x:data[1][i],y:data[3][i][0],marker:{enabled:true,fillColor:'#FFFF00'}});
 					if(data[0] == 1){
 						NHS.push({x:data[1][i],y:data[6][i],marker:{enabled:true,fillColor:'#FFFF00'}});
@@ -285,10 +268,6 @@ function getmeminfo2(a){
 				rss.push({x:data[0][i],y:data[3][i],marker:{enabled:true,fillColor:'#FF0000'}});
 			}else{
 				if(data[2][i].length == 3){
-					if(i!=0){
-						vsz.push(null);
-						rss.push(null);
-					}
 					vsz.push({x:data[0][i],y:data[2][i][0],marker:{enabled:true,fillColor:'#FFFF00'}});
 					rss.push({x:data[0][i],y:data[3][i],marker:{enabled:true,fillColor:'#FFFF00'}});
 				}
