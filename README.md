@@ -38,3 +38,4 @@
 chrome: `start chrome.exe --allow-file-access-from-files`  
 firefox: `about:config 中 privacy.file_unique_origin属性false`  
 5、报告数据刷新会在点击监控结果文件夹名称后刷新  
+[Report demo](/report_demo/Report.html)  

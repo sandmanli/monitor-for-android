@@ -1,0 +1,76 @@
+body{
+	margin:0;
+	padding:0;
+	font:70% Arial, Helvetica, sans-serif;
+	color:#555;
+	line-height:150%;
+	text-align:left;
+}
+h1, h2, p { margin:10px 0 }
+.hidden { visibility:hidden }
+.message { padding:10px; margin:15px 0; display:block; text-align:left }
+.message-title { font-weight:bold; font-size:1.25em }
+.message-body { margin-top:4px }
+.error, .notice, .success { padding:.8em; margin-bottom:1em; border:2px solid #ddd }
+.error { background:#FBE3E4; color:#8a1f11; border-color:#FBC2C4 }
+.notice { background:#FFF6BF; color:#514721; border-color:#FFD324 }
+.success { background:#E6EFC2; color:#264409; border-color:#C6D880 }
+.error a { color:#8a1f11 }
+.notice a { color:#514721 }
+.success a { color:#264409 }
+
+.div1 {
+    height:1000px;
+}
+.div2 {
+    width:100%;
+    height:35px;
+    background-color:#3399FF;
+    margin-top:20px;
+}
+.div2_1{
+    position:fixed;
+    width:100%;
+    height:35px;
+    z-index:999;
+    background-color:#3399FF;
+    top:0px;
+    _position:absolute;
+    _bottom:auto;
+    _top:expression(eval(document.documentElement.scrollTop));
+}
+.div3_1{
+	margin-right:1%;
+	margin-top:5px;
+	text-align:left;
+	font-weight:bold;
+	font-size:1.1em;
+	color:#ffffff;
+	float:right
+}
+.div3_2{
+	margin-left:1%;
+	margin-top:5px;
+	text-align:left;
+	font-weight:bold;
+	font-size:1.1em;
+	color:#ffffff;
+	float:left
+}
+.div4{
+	min-width:600px;
+	height:500px;
+	margin:5px 10px 30px 10px;
+}
+.div5{
+	height:20px;
+	margin-left:10px;
+	margin-bottom:5px;
+	font-weight:bold;
+	font-size:1.1em;
+}
+.div6{
+	min-width:600px;
+	height:750px;
+	margin:5px 10px 30px 10px;
+}

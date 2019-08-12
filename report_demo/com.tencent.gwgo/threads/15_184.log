@@ -1,0 +1,184 @@
+23153 10133     0:00 {om.tencent.gwgo} com.tencent.gwgo
+23162 10133     0:00 {Jit thread pool} com.tencent.gwgo
+23163 10133     0:00 {Signal Catcher} com.tencent.gwgo
+23164 10133     0:00 {ReferenceQueueD} com.tencent.gwgo
+23165 10133     0:00 {FinalizerDaemon} com.tencent.gwgo
+23168 10133     0:00 {FinalizerWatchd} com.tencent.gwgo
+23169 10133     0:00 {HeapTaskDaemon} com.tencent.gwgo
+23170 10133     0:00 {Binder:23153_1} com.tencent.gwgo
+23176 10133     0:00 {Binder:23153_2} com.tencent.gwgo
+23200 10133     0:00 {Profile Saver} com.tencent.gwgo
+23205 10133     0:00 {Binder:23153_3} com.tencent.gwgo
+23207 10133     0:00 {Binder:23153_4} com.tencent.gwgo
+23209 10133     0:00 {Timer-0} com.tencent.gwgo
+23213 10133     0:00 {BuglyThread-1} com.tencent.gwgo
+23214 10133     0:00 {BuglyThread-2} com.tencent.gwgo
+23215 10133     0:00 {BuglyThread-3} com.tencent.gwgo
+23216 10133     0:00 {FileObserver} com.tencent.gwgo
+23218 10133     0:00 {Thread-8} com.tencent.gwgo
+23221 10133     0:00 {process reaper} com.tencent.gwgo
+23222 10133     0:00 {ConnectivityThr} com.tencent.gwgo
+23223 10133     0:00 {asyncProcessor} com.tencent.gwgo
+23224 10133     0:21 {UnityMain} com.tencent.gwgo
+23225 10133     0:00 {Thread-90} com.tencent.gwgo
+23234 10133     0:00 {SoundPool} com.tencent.gwgo
+23235 10133     0:00 {SoundPoolThread} com.tencent.gwgo
+23236 10133     0:00 {ent.File.Tracer} com.tencent.gwgo
+23239 10133     0:00 {StatService} com.tencent.gwgo
+23241 10133     0:00 {nt} com.tencent.gwgo
+23242 10133     0:00 {StatStore} com.tencent.gwgo
+23244 10133     0:00 {StatDispatcher} com.tencent.gwgo
+23247 10133     0:00 {om.tencent.gwgo} com.tencent.gwgo
+23248 10133     0:00 {Timer-1} com.tencent.gwgo
+23254 10133     0:00 {Thread-17} com.tencent.gwgo
+23258 10133     0:00 {specialhttpdns-} com.tencent.gwgo
+23260 10133     0:00 {specialhttpdns-} com.tencent.gwgo
+23261 10133     0:00 {specialhttpdns-} com.tencent.gwgo
+23264 10133     0:00 {.working.thread} com.tencent.gwgo
+23265 10133     0:00 {OkHttp Connecti} com.tencent.gwgo
+23266 10133     0:00 {queued-work-loo} com.tencent.gwgo
+23272 10133     0:00 {XgStat} com.tencent.gwgo
+23273 10133     0:00 {Okio Watchdog} com.tencent.gwgo
+23296 10133     0:00 {beacon-thread-1} com.tencent.gwgo
+23297 10133     0:00 {pool-1-thread-1} com.tencent.gwgo
+23298 10133     0:00 {pool-1-thread-2} com.tencent.gwgo
+23299 10133     0:02 {ID_DEAFULT} com.tencent.gwgo
+23302 10133     0:00 {beacon-thread-2} com.tencent.gwgo
+23303 10133     0:00 {pool-1-thread-3} com.tencent.gwgo
+23305 10133     0:00 {apkupdate_asyct} com.tencent.gwgo
+23306 10133     0:00 {downloadStateCh} com.tencent.gwgo
+23310 10133     0:00 {ID_BEACON_REPOR} com.tencent.gwgo
+23311 10133     0:00 {beacon-thread-3} com.tencent.gwgo
+23313 10133     0:00 {TbsHandlerThrea} com.tencent.gwgo
+23325 10133     0:00 {d_thread} com.tencent.gwgo
+23328 10133     0:00 {halley_100_Temp} com.tencent.gwgo
+23329 10133     0:00 {halley_100_Http} com.tencent.gwgo
+23353 10133     0:00 {HandlerThread} com.tencent.gwgo
+23354 10133     0:00 {HwBinder:23153_} com.tencent.gwgo
+23357 10133     0:00 {RenderThread} com.tencent.gwgo
+23364 10133     0:00 {mali-mem-purge} com.tencent.gwgo
+23365 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23366 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23367 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23368 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23370 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23371 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23372 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23373 10133     0:00 {mali-utility-wo} com.tencent.gwgo
+23374 10133     0:00 {mali-cmar-backe} com.tencent.gwgo
+23375 10133     0:00 {mali-hist-dump} com.tencent.gwgo
+23376 10133     0:00 {RenderThread} com.tencent.gwgo
+23385 10133     0:00 {Binder:23153_5} com.tencent.gwgo
+23388 10133     0:00 {hwuiTask1} com.tencent.gwgo
+23439 10133     0:00 {Thread-83} com.tencent.gwgo
+23441 10133     0:00 {BatchDeleteObje} com.tencent.gwgo
+23443 10133     0:00 {AsyncReadManage} com.tencent.gwgo
+23444 10133     0:00 {Thread-89} com.tencent.gwgo
+23445 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23446 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23447 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23448 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23449 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23450 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23451 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23452 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23453 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23454 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23455 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23456 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23457 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23458 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23460 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23461 10133     0:00 {BackgroundWorke} com.tencent.gwgo
+23478 10133     0:00 {tpush.service.f} com.tencent.gwgo
+23481 10133     0:00 {cloud control c} com.tencent.gwgo
+23482 10133     0:00 {cloud control n} com.tencent.gwgo
+23484 10133     0:00 {UnityPreload} com.tencent.gwgo
+23489 10133     0:00 {UnityMain} com.tencent.gwgo
+23490 10133     0:00 {UnityMain} com.tencent.gwgo
+23493 10133     0:00 {pool-4-thread-1} com.tencent.gwgo
+23494 10133     0:00 {vmpss} com.tencent.gwgo
+23501 10133     0:00 {VmpFpsThread} com.tencent.gwgo
+23505 10133     0:00 {THREAD__100} com.tencent.gwgo
+23518 10133     0:00 {UnityMain} com.tencent.gwgo
+23519 10133     0:00 {UnityChoreograp} com.tencent.gwgo
+23521 10133     0:00 {Thread-42} com.tencent.gwgo
+23522 10133     0:00 {Thread-42} com.tencent.gwgo
+23524 10133     0:00 {Thread-42} com.tencent.gwgo
+23525 10133     0:00 {Thread-42} com.tencent.gwgo
+23526 10133     0:00 {Thread-42} com.tencent.gwgo
+23570 10133     0:00 {Thread-47} com.tencent.gwgo
+23571 10133     0:00 {Thread-47} com.tencent.gwgo
+23572 10133     0:00 {Thread-47} com.tencent.gwgo
+23573 10133     0:00 {Thread-47} com.tencent.gwgo
+23574 10133     0:00 {Thread-47} com.tencent.gwgo
+23575 10133     0:00 {Thread-47} com.tencent.gwgo
+23576 10133     0:00 {Thread-47} com.tencent.gwgo
+25952 10133     0:00 {Thread-47} com.tencent.gwgo
+25953 10133     0:00 {Thread-47} com.tencent.gwgo
+26029 10133     0:00 {locationsdk_net} com.tencent.gwgo
+26030 10133     0:00 {gps_provider} com.tencent.gwgo
+26037 10133     0:00 {thread_ArMgrImp} com.tencent.gwgo
+26080 10133     0:00 {halley_100_Busi} com.tencent.gwgo
+26751 10133     0:00 {th_CC_Timer} com.tencent.gwgo
+28260 10133     0:00 {UnityMain} com.tencent.gwgo
+28261 10133     0:00 {UnityMain} com.tencent.gwgo
+28262 10133     0:00 {NativeThread} com.tencent.gwgo
+28263 10133     0:00 {UnityMain} com.tencent.gwgo
+28264 10133     0:00 {NativeThread} com.tencent.gwgo
+28265 10133     0:00 {AudioTrack} com.tencent.gwgo
+28291 10133     0:00 {mna-bg} com.tencent.gwgo
+28294 10133     0:00 {mna-kartin} com.tencent.gwgo
+28296 10133     0:00 {UnityMain} com.tencent.gwgo
+28298 10133     0:00 {AsyncTask #2} com.tencent.gwgo
+28320 10133     0:00 {Thread-63} com.tencent.gwgo
+28338 10133     0:00 {UnityMain} com.tencent.gwgo
+30599 10133     0:00 {Thread-47} com.tencent.gwgo
+30609 10133     0:00 {Thread-73} com.tencent.gwgo
+30610 10133     0:00 {LogHandlerThrea} com.tencent.gwgo
+30612 10133     0:00 {GR-thread-pool-} com.tencent.gwgo
+30614 10133     0:00 {GR-thread-pool-} com.tencent.gwgo
+30616 10133     0:00 {GR-thread-pool-} com.tencent.gwgo
+30617 10133     0:00 {om.tencent.gwgo} com.tencent.gwgo
+30618 10133     0:00 {UnityMain} com.tencent.gwgo
+30620 10133     0:00 {UnityMain} com.tencent.gwgo
+30622 10133     0:00 {AudioRecord} com.tencent.gwgo
+30625 10133     0:00 {AudioTrack} com.tencent.gwgo
+30626 10133     0:00 {UnityMain} com.tencent.gwgo
+30628 10133     0:00 {ThreadUtil} com.tencent.gwgo
+30629 10133     0:00 {Thread-74} com.tencent.gwgo
+30663 10133     0:00 {UnityMain} com.tencent.gwgo
+30687 10133     0:00 {UnityMain} com.tencent.gwgo
+30703 10133     0:00 {UnityVibrator} com.tencent.gwgo
+  475 10133     0:00 {UnityMain} com.tencent.gwgo
+23278 10133     0:00 {o:xg_service_v4} com.tencent.gwgo:xg_service_v4
+23284 10133     0:00 {Jit thread pool} com.tencent.gwgo:xg_service_v4
+23287 10133     0:00 {Signal Catcher} com.tencent.gwgo:xg_service_v4
+23288 10133     0:00 {ReferenceQueueD} com.tencent.gwgo:xg_service_v4
+23289 10133     0:00 {FinalizerDaemon} com.tencent.gwgo:xg_service_v4
+23290 10133     0:00 {FinalizerWatchd} com.tencent.gwgo:xg_service_v4
+23291 10133     0:00 {HeapTaskDaemon} com.tencent.gwgo:xg_service_v4
+23294 10133     0:00 {Binder:23278_1} com.tencent.gwgo:xg_service_v4
+23295 10133     0:00 {Binder:23278_2} com.tencent.gwgo:xg_service_v4
+23300 10133     0:00 {Binder:23278_3} com.tencent.gwgo:xg_service_v4
+23309 10133     0:00 {Profile Saver} com.tencent.gwgo:xg_service_v4
+23319 10133     0:00 {BuglyThread-1} com.tencent.gwgo:xg_service_v4
+23321 10133     0:00 {BuglyThread-2} com.tencent.gwgo:xg_service_v4
+23322 10133     0:00 {BuglyThread-3} com.tencent.gwgo:xg_service_v4
+23332 10133     0:00 {FileObserver} com.tencent.gwgo:xg_service_v4
+23337 10133     0:00 {process reaper} com.tencent.gwgo:xg_service_v4
+23340 10133     0:00 {XgStat} com.tencent.gwgo:xg_service_v4
+23342 10133     0:00 {.working.thread} com.tencent.gwgo:xg_service_v4
+23358 10133     0:00 {ConnectivityThr} com.tencent.gwgo:xg_service_v4
+23397 10133     0:00 {Binder:23278_4} com.tencent.gwgo:xg_service_v4
+23405 10133     0:00 {Binder:23278_5} com.tencent.gwgo:xg_service_v4
+23422 10133     0:00 {queued-work-loo} com.tencent.gwgo:xg_service_v4
+23423 10133     0:00 {Timer-0} com.tencent.gwgo:xg_service_v4
+23424 10133     0:00 {tpush.service.f} com.tencent.gwgo:xg_service_v4
+23428 10133     0:00 {OkHttp Connecti} com.tencent.gwgo:xg_service_v4
+23440 10133     0:00 {TpnsClient} com.tencent.gwgo:xg_service_v4
+23515 10133     0:00 {Binder:23278_6} com.tencent.gwgo:xg_service_v4
+23579 10133     0:00 {Okio Watchdog} com.tencent.gwgo:xg_service_v4
+28321 10133     0:00 {Thread-12} com.tencent.gwgo:xg_service_v4
+23978 2000      0:00 sh /data/local/tmp/monitor.sh test/com.tencent.gwgo SurfaceView - com.tencent.gwgo/com.tencent.gwgo.activity.MainActivity#0 com.tencent.gwgo 5 1
+24080 2000      0:00 sh /data/local/tmp/monitor.sh test/com.tencent.gwgo SurfaceView - com.tencent.gwgo/com.tencent.gwgo.activity.MainActivity#0 com.tencent.gwgo 5 1

@@ -1,0 +1,7 @@
+PID=23978
+cpu_type=1
+sleep=5
+Hardware=
+build=HUAWEI/EVR-AL00/HWEVR:9/HUAWEIEVR-AL00/200C00R1:user/release-keys
+time=2019-08-12 22:32:06.501556
+uptime=2186877
