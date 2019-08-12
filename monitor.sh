@@ -217,7 +217,7 @@ for i in `ls /sys/devices/virtual/thermal/thermal_zone*/type`;do
 	fi
 done
 TZs=`$bb awk -v csv="$monitor/thermal.csv" '{split(FILENAME,N,"/");printf N[6]" "$0" ";if(R=="")R="uptime,"substr(N[6],13)":"$0;else R=R","substr(N[6],13)":"$0}END{print R>csv}' $thermal_path`
-thermal_path=`echo $thermal_path|$bb sed '/type/temp/'`
+thermal_path=`echo $thermal_path|$bb sed 's/type/temp/g'`
 
 #FPS
 if [ ! -z "$2" ];then
