@@ -1,0 +1,207 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="head/jquery.multiselect.css" />
+<link rel="stylesheet" type="text/css" href="head/jquery.multiselect.filter.css" />
+<link rel="stylesheet" type="text/css" href="head/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="head/style.css" />
+<script type="text/javascript" src="head/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="head/highcharts-4.2.1.js"></script>
+<script type="text/javascript" src="head/jquery-ui.min.js"></script>
+<script type="text/javascript" src="head/jquery.multiselect.js"></script>
+<script type="text/javascript" src="head/jquery.multiselect.filter.js"></script>
+<script type="text/javascript" src="head/theme.js"></script>
+<script type="text/javascript" src="head/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="head/function.js"></script>
+<script type="text/javascript" src="head/monitor.js"></script>
+<script type="text/javascript" src="head/charts.js"></script>
+<script type="text/javascript" src="data/list.js"></script>
+
+</head>
+
+<script>
+
+var datajs=""
+var Case=0
+var monitor=0
+var cpulist=[]
+$.ajaxSetup({cache: true});
+
+window.onscroll=function(){ 
+	var t=document.documentElement.scrollTop||document.body.scrollTop;
+	var div2=document.getElementById("div2");
+	if(t>=50){ 
+		div2.className="div2_1";
+	}else{
+		div2.className="div2";
+	} 
+}
+
+$(function(){
+	$("#theme_select").multiselect({
+		multiple: false,
+		header: false,
+		noneSelectedText: "选择主题",
+		minWidth: 150,
+		height: 238,
+		selectedList: 1,
+	});
+});
+
+$(function(){
+	var el=$("#case_select").multiselect({
+		multiple: false,
+		noneSelectedText: "选择用例",
+		minWidth: 235,
+		height: 110,
+		selectedList: 1,
+	}).multiselectfilter({
+		label: '查找:',
+		placeholder: '输入关键字',
+		autoReset: true
+	});
+	for (var i=0; i < caselist.length; i++){
+		var v=caselist[i][0], opt=$('<option />', {
+			value: i,
+			text: v
+		});
+		opt.appendTo(el);
+		if(i==0){
+			opt.attr('selected',true);
+		}
+	};
+	el.multiselect('refresh');
+	Monitor(0,0)
+});
+
+function Monitor(n,P){
+	var el=$("#monitor_select").multiselect({
+		multiple: false,
+		noneSelectedText: "选择结果",
+		minWidth: 235,
+		height: 110,
+		selectedList: 1,
+	}).multiselectfilter({
+		label: '查找:',
+		placeholder: '输入关键字',
+		autoReset: true
+	});
+	for (var i=0; i < caselist[n][1].length; i++){
+		var v=caselist[n][1][i], opt=$('<option />', {
+			value: i,
+			text: v
+		});
+		opt.appendTo(el);
+		if(i==P){
+			opt.attr('selected',true);
+		}
+	};
+	el.multiselect('refresh');
+}
+
+function ChangeCase(option){
+	Case=option.value;
+	$("#monitor_select").empty();
+	Monitor(Case,0)
+}
+
+function charts(){
+	$.getScript(datajs,function(){
+		cpulist=[cpuline[0], cpuline[1], cpuline[2], cpuline[3], cpuline[4]];
+		updatecharts(0)
+	});
+}
+
+function ChangeMonitor(option){
+	monitor=option.value;
+	$("#monitor_select").empty();
+	Monitor(Case,monitor);
+	datajs="data/" + caselist[Case][0] + "_" + caselist[Case][1][monitor] + ".js";
+	charts()
+}
+
+$(function(){
+	$("#mem_select").multiselect({
+		multiple: false,
+		header: false,
+		noneSelectedText: "选择一组数据",
+		minWidth: 235,
+		height: 140,
+		selectedList: 1,
+	});
+});
+
+$(function(){
+	$("#mem2_select").multiselect({
+		multiple: false,
+		header: false,
+		noneSelectedText: "选择一组数据",
+		minWidth: 235,
+		height: 140,
+		selectedList: 1,
+	});
+});
+
+$(document).ready(function(){
+	Highcharts.setOptions(themeArr[4]);
+	datajs="data/" + caselist[Case][0] + "_" + caselist[Case][1][monitor] + ".js"
+	charts()
+})
+
+
+</script>
+
+<body bgColor="#DCDCDC">
+<div class="div1">
+	<div id="div2" class="div2">
+		<div class="div3_2"><select id="case_select" multiple="multiple" size="5"  onchange="ChangeCase(this)"></select></div>
+		<div id="monitor" class="div3_2"><select id="monitor_select" multiple="multiple" size="5"  onchange="ChangeMonitor(this)"></select></div>
+		<div class="div3_1">
+			选择主题：
+			<select id="theme_select" onchange="ChangeThemes(this)">
+				<option value="0">默认</option>
+				<option value="1">深蓝 (dark-blue)</option>
+				<option value="2">深绿 (dark-green)</option>
+				<option value="3">dark-unica</option>
+				<option value="4" selected>灰色(gray)</option>
+				<option value="5">网格(grid)</option>
+				<option value="6">grid-light</option>
+				<option value="7">sand-signika</option>
+				<option value="8">天空(skies)</option>
+			</select>
+		</div>
+	</div>
+	<div id="cur_freq" class="div4"></div>
+	<div id="gpu_freq" class="div4"></div>
+	<div id="cpu" class="div4"></div>
+	<div id="cpu_menu" class="div5"><select id="cpuinfolist" multiple="multiple" size="5"></select>（排序方式：CPU最大值降序排列，括号中数字。）</div>
+	<div id="cpuinfo" class="div4"></div>
+	<div id="mem_menu" class="div5">
+		<select id="mem_select" onchange="mem(this.value)">
+			<option value="all" selected>总内存图</option>
+			<option value="free">剩余内存图</option>
+			<option value="io">Dirty和Writeback内存图</option>
+			<option value="AI">Active和Inactive内存图</option>
+			<option value="MS">Mapped和Slab内存图</option>
+		</select>
+	</div>
+	<div id="mem" class="div4"></div>
+	<div id="mem2_menu" class="div5">
+		<select id="mem2_select" onchange="mem2(this.value)">
+			<option value="mmap" selected>mmap内存图</option>
+			<option value="other">其他项内存图</option>
+		</select>
+	</div>
+	<div id="mem2" class="div6"></div>
+	<div id="meminfo_menu" class="div5"><select id="meminfo_select" multiple="multiple" size="5" onchange="meminfo([this.value])"></select>（排序方式：Pss最大值-最小值降序排列，括号中数字“PSS极值差|PSS最大值”，单位M。）</div>
+	<div id="meminfo" class="div4"></div>
+	<div id="meminfo2_menu" class="div5"><select id="meminfo2_select" multiple="multiple" size="5" onchange="meminfo2([this.value])"></select>（排序方式：VSZ最大值-最小值降序排列，括号中数字“VSZ极值差|VSZ最大值”，单位M。）</div>
+	<div id="meminfo2" class="div4"></div>
+	<div id="btm" class="div4"></div>
+	<div id="fps_menu" class="div5"><select id="fps_select" multiple="multiple" size="5" onchange="FPS([this.value])"></select>（格式：窗口名_*，SurfaceFlinger监控窗口的窗口名, 多个同名窗口*；System为系统动效）</div>
+	<div id="FPS" class="div4"></div>
+	<div id="thermal_menu" class="div5"><select id="thermal_select" multiple="multiple" size="5" onchange="thermal([this.value])"></select>(格式：*:type内容, /sys/devices/virtual/thermal/thermal_zone*/type)</div>
+	<div id="THERMAL" class="div4"></div>
+</div>
+</body>
+</html>
