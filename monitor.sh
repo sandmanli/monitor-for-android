@@ -24,7 +24,7 @@ if [ ! -z "$packages" ];then
 		echo "$packages"|$bb sed 's/|/\n/g'|while read p;do
 			local Ts=`$bb ps -T|$bb awk -v package="$p" '$NF==package{r+=1}END{print r}'`
 			local FD=-1
-			echo "$check"|$bb awk -v package="$p" '{if($2==package){t+=1;print $1" "$2" "t}}'|while read l;do
+			echo "$check"|$bb awk -v package="$p" '{if($2==package){t+=1;D[$1" "$2]=t}}END{for(i in D)print i" "D[i]}'|while read l;do
 				local pid=`echo $l|$bb awk '{print $1}'`
 				if [ -f /proc/$pid/cmdline ];then
 					if [ $root -eq 1 -a ! -z "$pid" ];then
@@ -109,10 +109,12 @@ if [ ! -z "$tmp" -a "$Time" != "0" ];then
 		else
 			local arg="died"
 		fi
-		if [ $root -eq 1 ];then
-			echo "$data,$pid,,,,,,,,,,,\"$arg\""
-		else
-			echo "$data,$pid,,,,,,,,,,\"$arg\""
+		if [ ! -z $pid -a ! -z "$data" ];then
+			if [ $root -eq 1 ];then
+				echo "$data,$pid,,,,,,,,,,,\"$arg\""
+			else
+				echo "$data,$pid,,,,,,,,,,\"$arg\""
+			fi
 		fi
 	done
 fi
