@@ -52,7 +52,7 @@ if [ ! -z "$packages" ];then
 								if [ -f /system/bin/showmap -o -f /system/xbin/showmap ];then
 									showmap $pid |$bb awk -v OFS=, -v p="$pid" -v time=$uptime -v csv="$monitor/showmap.csv" '{if(NR==2){if($0~/swap/){o=10;s=78}else{o=9;s=69}};if($0!~/virtual|size|--------/){C=$o;if(NF>o)C=substr($0,s);print time,p,$1,$2,$3,$4,$5,$6,$7,$(o-1),C>>csv}}'
 								else
-									$bb awk -v OFS=, -v p="$pid" -v time=$uptime -v csv="$monitor/showmap.csv" '{if(NF==3){o+=1;if(o<=7){if(o==1)Size[C]+=$2;else{if(o==2)Rss[C]+=$2;else{if(o==3)Pss[C]+=$2;else{if(o==4)SC[C]+=$2;else{if(o==5)SD[C]+=$2;else{if(o==6)PC[C]+=$2;else{if(o==7)PD[C]+=$2;}}}}}}}}else{o=0;if(n==1||NR==1){n=0;if(NF==5){C="[anon]"}else{C=$6;if(NF>6)C=substr($0,39+length($1)+length($2)+length($3)+length($4)+length($5))};N[C]+=1};if($1=="VmFlags:")n=1}}END{for(i in N){print time,p,Size[i],Rss[i],Pss[i],SC[i],SD[i],PC[i],PD[i],N[i],i >>csv;T1+=Size[i];T2+=Rss[i];T3+=Pss[i];T4+=SC[i];T5+=SD[i];T6+=PC[i];T7+=PD[i];T8+=N[i]};if(T1+0>0)print time,p,T1,T2,T3,T4,T5,T6,T7,T8,"TOTAL" >>csv}' /proc/2062/smaps
+									$bb awk -v OFS=, -v p="$pid" -v time=$uptime -v csv="$monitor/showmap.csv" '{if(NF==3){o+=1;if(o<=7){if(o==1)Size[C]+=$2;else{if(o==2)Rss[C]+=$2;else{if(o==3)Pss[C]+=$2;else{if(o==4)SC[C]+=$2;else{if(o==5)SD[C]+=$2;else{if(o==6)PC[C]+=$2;else{if(o==7)PD[C]+=$2;}}}}}}}}else{o=0;if(n==1||NR==1){n=0;if(NF==5){C="[anon]"}else{C=$6;if(NF>6)C=substr($0,39+length($1)+length($2)+length($3)+length($4)+length($5))};N[C]+=1};if($1=="VmFlags:")n=1}}END{for(i in N){print time,p,Size[i],Rss[i],Pss[i],SC[i],SD[i],PC[i],PD[i],N[i],i >>csv;T1+=Size[i];T2+=Rss[i];T3+=Pss[i];T4+=SC[i];T5+=SD[i];T6+=PC[i];T7+=PD[i];T8+=N[i]};if(T1+0>0)print time,p,T1,T2,T3,T4,T5,T6,T7,T8,"TOTAL" >>csv}' /proc/$pid/smaps
 								fi
 							fi
 						fi
@@ -273,12 +273,10 @@ while true;do
 	if [ -f /data/local/tmp/stop ];then
 		echo "Found stop file!!!"
 		wait
-		touch /data/local/tmp/finish
 		break
 	elif [ `$bb df /data|$bb awk '{r=substr($(NF-1),1,length($(NF-1))-1)}END{print r+0}'` -ge 90 ];then
 		echo "The free space of data less 10%,stop!!!"
 		wait
-		touch /data/local/tmp/finish
 		break
 	fi
 	if [ $4 -gt 0 ];then
