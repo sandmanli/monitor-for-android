@@ -73,7 +73,7 @@ get_meminfo(){
 if [ ! -f $monitor/mem2.csv ];then
 	echo uptime,$mem2 >$monitor/mem2.csv
 fi
-dumpsys meminfo |$bb awk -v time=$uptime -v packages="busybox|$packages" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
+dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$packages" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
 	l=split(mem,O,","); \
 	mem="" \
 } \
@@ -84,12 +84,16 @@ dumpsys meminfo |$bb awk -v time=$uptime -v packages="busybox|$packages" -v mem=
 	gsub(/K: /," kB: ",$0); \
 	if(state==1){ \
 		if($3"|"!~packages){ \
-			R=time","$3","$1","$5
-			l=split($3,Check,"."); \
-			if(l==1){ \
-				cmd="cat /proc/"$5"/cmdline";Args=""; \
-				while(cmd|getline){if($0!=""){if(Args=="")Args=$0; else Args=Args" "$0}}; \
-				if(Args=="")Args="null"; \
+			R=time","$3","$1","$5; \
+			if(type==1){ \
+				l=split($3,Check,"."); \
+				if(l==1){ \
+					cmd="cat /proc/"$5"/cmdline";Args=""; \
+					while(cmd|getline){if($0!=""){if(Args=="")Args=$0; else Args=Args" "$0}}; \
+					if(Args=="")Args="null"; \
+				}
+			}else{ \
+				Args="null" \
 			}; \
 			print R",,,,,,,,,,\""Args"\"" >>csv1 \
 		} \
@@ -224,6 +228,13 @@ echo "Loop:$4,uptime,Date_Time,DisplayID,FocusedWindow,FocusedApplication,Flags,
 CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" 'END{R="uptime,0:"NR;for(i=1;i<NR;i++)R=R","i;print R>csv;print NR}' /sys/devices/system/cpu/cpu*/online`
 
 mem2=`dumpsys meminfo |$bb awk '{if($0=="")state=0;gsub(/K: /," kB: ",$0);if(state==2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i;if(R=="")R=C;else R=R","C}};if($2=="RAM:"){if($1=="Total")R=R",Total_RAM";else {if($1=="Free")R=R",Free_RAM,Free_cached_pss,Free_cached_kernel,free";else {if($1=="Used")R=R",Used_RAM,used_pss,used_kernel";else {if($1=="Lost")R=R",Lost_RAM"}}}}if($1=="ZRAM:"){R=R",swap_physical_used,swap_for,swap_total"};if($NF=="category:")state=2}END{print R}'`
+
+#检查awk外部调用命令是否正常
+if [ -z "`/data/local/tmp/busybox awk 'BEGIN{system("ps")}'`" ];then
+	awk=0
+else
+	awk=1
+fi
 
 thermal_path=""
 for i in `ls /sys/devices/virtual/thermal/thermal_zone*/type`;do
