@@ -39,7 +39,7 @@ function BTM(){
 				var s='<small>' + this.x + 's</small><table>';
 				$.each(this.points, function (){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
-						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '%</b></td></tr>';
+						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
 				if(csvData[0]==1){
 					var p=isHasElement(Windows[0],this.x);
@@ -982,7 +982,6 @@ function ResetOptions(){
 }
 
 function ChangeThemes(option){
-	Selected_theme=option.value
 	var background_img;
 	ResetOptions();
 	Highcharts.setOptions(themeArr[0]);

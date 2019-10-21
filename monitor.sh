@@ -46,16 +46,6 @@ if [ ! -z "$packages" ];then
 								ls -l /proc/$pid/fd/ 1>$monitor/FDs/$pid"_"$loop"_"$FD.log 2>/dev/null
 							fi
 						fi
-						#showmap
-						if [ $1 -eq 2 ];then
-							if [ $((loop%showmap)) -eq 0 ];then
-								if [ -f /system/bin/showmap -o -f /system/xbin/showmap ];then
-									showmap $pid |$bb awk -v OFS=, -v p="$pid" -v time=$uptime -v csv="$monitor/showmap.csv" '{if(NR==2){if($0~/swap/){o=10;s=78}else{o=9;s=69}};if($0!~/virtual|size|--------/){C=$o;if(NF>o)C=substr($0,s);print time,p,$1,$2,$3,$4,$5,$6,$7,$(o-1),C>>csv}}'
-								else
-									$bb awk -v OFS=, -v p="$pid" -v time=$uptime -v csv="$monitor/showmap.csv" '{if(NF==3){o+=1;if(o<=7){if(o==1)Size[C]+=$2;else{if(o==2)Rss[C]+=$2;else{if(o==3)Pss[C]+=$2;else{if(o==4)SC[C]+=$2;else{if(o==5)SD[C]+=$2;else{if(o==6)PC[C]+=$2;else{if(o==7)PD[C]+=$2;}}}}}}}}else{o=0;if(n==1||NR==1){n=0;if(NF==5){C="[anon]"}else{C=$6;if(NF>6)C=substr($0,39+length($1)+length($2)+length($3)+length($4)+length($5))};N[C]+=1};if($1=="VmFlags:")n=1}}END{for(i in N){print time,p,Size[i],Rss[i],Pss[i],SC[i],SD[i],PC[i],PD[i],N[i],i >>csv;T1+=Size[i];T2+=Rss[i];T3+=Pss[i];T4+=SC[i];T5+=SD[i];T6+=PC[i];T7+=PD[i];T8+=N[i]};if(T1+0>0)print time,p,T1,T2,T3,T4,T5,T6,T7,T8,"TOTAL" >>csv}' /proc/$pid/smaps
-								fi
-							fi
-						fi
 					fi
 					local arg=`$bb awk 'BEGIN{r="null"}{if(NR>1){if(NR==2)r=$0;else r=r" "$0}}END{print r}' /proc/$pid/cmdline`
 					if [ -z "`echo $arg|$bb tr -d " "`" ];then
@@ -80,44 +70,71 @@ fi
 }
 
 get_meminfo(){
-if [ -f /data/local/tmp/mem2.tmp ];then
-	$bb rm /data/local/tmp/mem2.tmp
+if [ ! -f $monitor/mem2.csv ];then
+	echo uptime,$mem2 >$monitor/mem2.csv
 fi
-local tmp=`dumpsys meminfo|$bb sed 's/(//g;s/)//g;s/Total PSS by //g;s/ Services/_Services/g;s/K: / kB: /g;s/,//g'|$bb awk -v tmp="/data/local/tmp/mem2.tmp" -v time=$uptime '{if(NF==0)S+=1;if(NR!=2){if(S==2){if(NF==3)g=$3;if(NF>=5)print time","$3","$1" "$5" "g}else{if(S==3){if(NF>2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i};print C" "$1 >>tmp}}else{if(S==4){if($1=="Free"){if(substr($3,length($3),1)!="K"){R=0;r=sprintf("Free_RAM "$3"\ncached_pss "$5"\ncached_kernel "$9"\nfree "$(NF-1))}else{R=1;r=sprintf("Free_RAM "substr($3,1,length($3)-1)"\ncached_pss "substr($4,1,length($4)-1)"\ncached_kernel "substr($8,1,length($8)-1)"\nfree "substr($(NF-1),1,length($(NF-1))-1))};print r >>tmp};if($1=="Used"){if(R==0){r=sprintf("Used_RAM "$3"\nused_pss "$5"\nkernel "$9)}else{r=sprintf("Used_RAM "substr($3,1,length($3)-1)"\nused_pss "substr($4,1,length($4)-1)"\nkernel "substr($8,1,length($8)-1))};print r >>tmp};if($1=="Lost"){if(R==0){r=sprintf("Lost_RAM "$3)}else{r=sprintf("Lost_RAM "substr($3,1,length($3)-1))};print r >>tmp}}}}}}'`
-
-if [ ! -z "$tmp" -a "$Time" != "0" ];then
-	if [ ! -f $monitor/mem2.csv ];then
-		$bb sort /data/local/tmp/mem2.tmp|$bb awk -v csv="$monitor/mem2.csv" -v Time="$uptime" '{if(T==""){T=$1;r=$2}else{T=T","$1;r=r","$2}}END{print "uptime,"T>csv;if(r!="")print Time","r>>csv;print NR}' >/data/local/tmp/mem2.check
-	else
-		local check=`cat /data/local/tmp/mem2.check`
-		$bb sort /data/local/tmp/mem2.tmp|$bb awk -v csv="$monitor/mem2.csv" -v Time="$uptime" -v C=$check '{if(r=="")r=$2;else r=r","$2}END{if(NR==C&&r!="")print Time","r>>csv}'
-	fi
-	local grep_str="busybox|DUMP"
-	if [ ! -z "$packages" ];then
-		local grep_str="$grep_str|"`echo $packages|$bb sed 's/\./\\\\./g;s/\[/\\\[/g;s/\]/\\\]/g'`
-		local tmp=`echo "$tmp"|$bb grep -E -v "$grep_str"`
-	fi
-	echo "$tmp"|while read l;do
-		local data=`echo "$l"|$bb awk '{print $1}'`
-		local pid=`echo "$l"|$bb awk '{print $2}'`
-		local type=`echo "$l"|$bb awk '{print $3}'`
-		if [ -f /proc/$pid/cmdline ];then
-			local arg=`$bb awk 'BEGIN{r="null"}{if(NR>1){if(NR==2)r=$0;else r=r" "$0}}END{print r}' /proc/$pid/cmdline`
-			if [ -z "`echo $arg|$bb tr -d " "`" ];then
-				local arg="null"
-			fi
-		else
-			local arg="died"
-		fi
-		if [ ! -z $pid -a ! -z "$data" ];then
-			if [ $root -eq 1 ];then
-				echo "$data,$pid,,,,,,,,,,,\"$arg\""
-			else
-				echo "$data,$pid,,,,,,,,,,\"$arg\""
-			fi
-		fi
-	done
-fi
+dumpsys meminfo |$bb awk -v time=$uptime -v packages="busybox|$packages" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
+	l=split(mem,O,","); \
+	mem="" \
+} \
+{ \
+	if($0=="")state=0; \
+	gsub(/\(|\)|Total PSS by |,/,"",$0); \
+	gsub(/ Services/,"_Services",$0); \
+	gsub(/K: /," kB: ",$0); \
+	if(state==1){ \
+		if($3"|"!~packages){ \
+			R=time","$3","$1","$5
+			l=split($3,Check,"."); \
+			if(l==1){ \
+				cmd="cat /proc/"$5"/cmdline";Args=""; \
+				while(cmd|getline){if($0!=""){if(Args=="")Args=$0; else Args=Args" "$0}}; \
+				if(Args=="")Args="null"; \
+			}; \
+			print R",,,,,,,,,,\""Args"\"" >>csv1 \
+		} \
+	}else{ \
+		if(state==2){ \
+			C=$3; \
+			if(NF>3){ \
+				for(i=4;i<=NF;i++)C=C"_"$i \
+			}; \
+			D[C]=$1 \
+		} \
+	}; \
+	if($2=="RAM:"){ \
+		if($1=="Total"){ \
+			D["Total_RAM"]=substr($3,1,length($3)-1) \
+		}else{ \
+			if($1=="Free"){ \
+				D["Free_RAM"]=substr($3,1,length($3)-1); \
+				D["Free_cached_pss"]=substr($4,1,length($4)-1); \
+				D["Free_cached_kernel"]=substr($8,1,length($8)-1); \
+				D["free"]=substr($12,1,length($12)-1) \
+			}else{ \
+				if($1=="Used"){ \
+					D["Used_RAM"]=substr($3,1,length($3)-1); \
+					D["used_pss"]=substr($4,1,length($4)-1); \
+					D["used_kernel"]=substr($8,1,length($8)-1) \
+				}else{ \
+					if($1=="Lost")D["Lost_RAM"]=substr($3,1,length($3)-1) \
+				} \
+			} \
+		} \
+	}; \
+	if($1=="ZRAM:"){ \
+		D["swap_physical_used"]=substr($2,1,length($2)-1); \
+		D["swap_for"]=substr($6,1,length($6)-1); \
+		D["swap_total"]=substr($9,1,length($9)-1) \
+	}; \
+	if($1=="process:"){state=1}else{ \
+		if($1=="category:")state=2 \
+	} \
+}END{ \
+	R=D[O[1]]; \
+	for(i=2;i<=l;i++)R=R","D[O[i]]; \
+	print time,R >>csv \
+}'
 }
 
 getmem(){
@@ -151,7 +168,6 @@ while true;do
 	dumpsys SurfaceFlinger --latency |$bb awk -v T="$uptime" -v target=$2 -v kpi=$KPI '{if(NR==1){r=$1/1000000;if(r<0)r=$1/1000;b=0;n=0;w=1}else{if(n>0&&$0=="")O=1;if(NF==3&&$2!=0&&$2!=9223372036854775807){x=($3-$1)/1000000/r;if(b==0){b=$2;n=1;d=0;D=0;if(x<=1)C=r;if(x>1){d+=1;C=int(x)*r;if(x%1>0)C+=r};if(x>2)D+=1;m=r;o=0}else{c=($2-b)/1000000;if(c>500){O=1}else{n+=1;if(c>=r){C+=c;if(c>kpi)o+=1;if(c>=m)m=c;if(x>1)d+=1;if(x>2)D+=1;b=$2}else{C+=r;b=sprintf("%.0f",b+r*1000000)}}};if(n==1)s=sprintf("%.3f",$2/1000000000)};if(n>0&&O==1){O=0;if(n==1)t=sprintf("%.3f",s+C/1000);else t=sprintf("%.3f",b/1000000000);f=sprintf("%.2f",n*1000/C);m=sprintf("%.0f",m);g=f/target;if(g>1)g=1;h=kpi/m;if(h>1)h=1;e=sprintf("%.2f",g*60+h*20+(1-o/n)*20);print s","t","T","f+0","n","d","D","m","o","e","w;n=0;if($0==""){b=0;w+=1}else{b=$2;n=1;d=0;D=0;if(x<=1)C=r;if(x>1){d+=1;C=int(x)*r;if(x%1>0)C+=r};if(x>2)D+=1;m=r;o=0}}}}' >>$monitor/fps_system.csv
 done
 }
-
 
 #main
 ${testresult="/data/local/tmp/"} 2>/dev/null
@@ -199,10 +215,6 @@ echo "uptime,BatteryLevel,PlugType" >$monitor/btm.csv
 if [ $root -eq 1 ];then
 	mkdir -p $monitor/FDs
 	echo "uptime,Process_Name,Pss,PID,Native_Heap(Size),Native_Heap(Alloc),Native_Heap(Free),Dalvik_Heap(Size),Dalvik_Heap(Alloc),Dalvik_Heap(Free),Dalvik_Pss,Views,Threads,FD,Args" >$monitor/meminfo.csv
-	if [ $5 -eq 2 ];then
-		echo "uptime,PID,Process_Name,VSS,RSS,Pss,shared_clean,shared_dirty,private_clean,private_dirty,#,object" >$monitor/showmap.csv
-		showmap=$((60/$5))
-	fi
 else
 	echo "uptime,Process_Name,Pss,PID,Native_Heap(Size),Native_Heap(Alloc),Native_Heap(Free),Dalvik_Heap(Size),Dalvik_Heap(Alloc),Dalvik_Heap(Free),Dalvik_Pss,Views,Threads,Args" >$monitor/meminfo.csv
 fi
@@ -210,6 +222,8 @@ echo "uptime,PID,PPID,VSZ,RSS,COMMAND,Args" >$monitor/meminfo2.csv
 echo "Loop:$4,uptime,Date_Time,DisplayID,FocusedWindow,FocusedApplication,Flags,Type,Pid,uid,frame" >$monitor/windows.csv
 
 CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" 'END{R="uptime,0:"NR;for(i=1;i<NR;i++)R=R","i;print R>csv;print NR}' /sys/devices/system/cpu/cpu*/online`
+
+mem2=`dumpsys meminfo |$bb awk '{if($0=="")state=0;gsub(/K: /," kB: ",$0);if(state==2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i;if(R=="")R=C;else R=R","C}};if($2=="RAM:"){if($1=="Total")R=R",Total_RAM";else {if($1=="Free")R=R",Free_RAM,Free_cached_pss,Free_cached_kernel,free";else {if($1=="Used")R=R",Used_RAM,used_pss,used_kernel";else {if($1=="Lost")R=R",Lost_RAM"}}}}if($1=="ZRAM:"){R=R",swap_physical_used,swap_for,swap_total"};if($NF=="category:")state=2}END{print R}'`
 
 thermal_path=""
 for i in `ls /sys/devices/virtual/thermal/thermal_zone*/type`;do
@@ -265,7 +279,7 @@ while true;do
 	getmem
 	getvss
 	if [ $5 -ge 1 ];then
-		get_meminfo >>$monitor/meminfo.csv
+		get_meminfo
 	fi
 	get_package $5 >>$monitor/meminfo.csv
 	#stop
