@@ -89,12 +89,12 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 				l=split($3,Check,"."); \
 				if(l==1){ \
 					cmd="cat /proc/"$5"/cmdline";Args=""; \
-					while(cmd|getline){if($0!=""){if(Args=="")Args=$0; else Args=Args" "$0}}; \
-					if(Args=="")Args="null"; \
+					while(cmd|getline){if($0!=""){if(Args=="")Args=$0; else Args=Args" "$0}} \
 				}
 			}else{ \
 				Args="null" \
 			}; \
+			if(Args=="")Args="null"; \
 			print R",,,,,,,,,,,\""Args"\"" >>csv1 \
 		} \
 	}else{ \
