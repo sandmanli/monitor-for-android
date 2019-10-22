@@ -190,6 +190,9 @@ loop=0
 if [ -f /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq -a -f /sys/class/power_supply/battery/current_now ];then
 	cpu_type=0
 	echo "uptime,gpu_freq,charge_current" >$monitor/others.csv
+elif [ -f /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/load ];then
+	cpu_type=2
+	echo "uptime,gpu_freq" >$monitor/others.csv
 else
 	cpu_type=1
 fi
@@ -225,7 +228,7 @@ fi
 echo "uptime,PID,PPID,VSZ,RSS,COMMAND,Args" >$monitor/meminfo2.csv
 echo "Loop:$4,uptime,Date_Time,DisplayID,FocusedWindow,FocusedApplication,Flags,Type,Pid,uid,frame" >$monitor/windows.csv
 
-CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" 'END{R="uptime,0:"NR;for(i=1;i<NR;i++)R=R","i;print R>csv;print NR}' /sys/devices/system/cpu/cpu*/online`
+CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" '{if(FNR==1)cpu+=1}END{R="uptime,0:"cpu;for(i=1;i<cpu;i++)R=R","i;print R>csv;print cpu}' /sys/devices/system/cpu/cpu*/uevent`
 
 mem2=`dumpsys meminfo |$bb awk '{if($0=="")state=0;gsub(/K: /," kB: ",$0);if(state==2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i;if(R=="")R=C;else R=R","C}};if($2=="RAM:"){if($1=="Total")R=R",Total_RAM";else {if($1=="Free")R=R",Free_RAM,Free_cached_pss,Free_cached_kernel,free";else {if($1=="Used")R=R",Used_RAM,used_pss,used_kernel";else {if($1=="Lost")R=R",Lost_RAM"}}}}if($1=="ZRAM:"){R=R",swap_physical_used,swap_for,swap_total"};if($NF=="category:")state=2}END{print R}'`
 
@@ -284,6 +287,8 @@ while true;do
 	#others
 	if [ $cpu_type -eq 0 ];then
 		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{if(R=="")R=$0/1000000;else R=R","$0}END{print time","R >>csv}' /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq /sys/class/power_supply/battery/current_now
+	elif [ $cpu_type -eq 2 ];then
+		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{print time","substr($1,3,length($1)-4)/1000000 >>csv}' /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/load
 	fi
 	#cpu
 	getcpu $cpu_p
