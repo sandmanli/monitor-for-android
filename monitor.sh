@@ -95,7 +95,7 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 			}else{ \
 				Args="null" \
 			}; \
-			print R",,,,,,,,,,\""Args"\"" >>csv1 \
+			print R",,,,,,,,,,,\""Args"\"" >>csv1 \
 		} \
 	}else{ \
 		if(state==2){ \
