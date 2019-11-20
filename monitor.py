@@ -1,13 +1,10 @@
+# -*- coding: utf-8 -*-
 import codecs
 import datetime as dt
 import os
 import pandas as pd
 import sys
 import time
-
-# -*- coding: utf-8 -*-
-reload(sys)
-sys.setdefaultencoding( "utf-8" )
 
 def log(info):
     print('%s %s'%(dt.datetime.now(), info))
@@ -663,10 +660,18 @@ var gpufreqdata=%s;
         data = pd.read_csv(r'%s'%csvPath, warn_bad_lines=False, error_bad_lines=False, low_memory=False).fillna(value = 0)
         Time = data['uptime'].values.tolist()
         gpu_freq = data['gpu_freq'].tolist()
+        if 'gpu' in data.columns:
+            check = 1
+            gpu = data['gpu'].astype('Float64').tolist()
+        else:
+            check = 0
         for i in range(len(gpu_freq)):
             gpu_freq[i] = int(gpu_freq[i])
         log('gpu Finish')
-        return [Time, gpu_freq]
+        if check == 0:
+            return [Time, gpu_freq]
+        else:
+            return [Time, gpu_freq, gpu]
 
 
 

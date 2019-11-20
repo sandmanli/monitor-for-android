@@ -822,10 +822,10 @@ function gpufreq(){
 			title: {text: 'Uptime(s)'},
 			floor: data[0]
 		},
-		yAxis: {
-			title: {text:'主频(MHZ)'},
-			floor: 0
-		},
+		yAxis: [
+			{labels: {format: '{value}MHZ'},title: {text:'主频(MHZ)'},floor: 0},
+			{labels: {format: '{value}%'},title: {text:'百分比(%)'},floor: 0,opposite: true}
+		],
 		legend: {
 			layout: 'vertical',
 			align: 'right',

@@ -189,7 +189,7 @@ cpu_p=`$bb top -b -n 1|$bb awk 'NR==4{print NF-1}'`
 loop=0
 if [ -f /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq -a -f /sys/class/power_supply/battery/current_now ];then
 	cpu_type=0
-	echo "uptime,gpu_freq,charge_current" >$monitor/others.csv
+	echo "uptime,gpu_freq,gpu,charge_current" >$monitor/others.csv
 elif [ -f /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/load ];then
 	cpu_type=2
 	echo "uptime,gpu_freq" >$monitor/others.csv
@@ -286,7 +286,7 @@ while true;do
 	dumpsys power|$bb grep -E "mBatteryLevel=|mPlugType"|$bb awk -F "=" -v OFS="," -v time=$uptime -v csv="$monitor/btm.csv" '{if(NR==1)a=$2;else{print time,$2,a >>csv;exit}}'
 	#others
 	if [ $cpu_type -eq 0 ];then
-		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{if(R=="")R=$0/1000000;else R=R","$0}END{print time","R >>csv}' /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq /sys/class/power_supply/battery/current_now
+		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{if(FILENAME=="/sys/class/kgsl/kgsl-3d0/gpubusy"){p=sprintf("%.2f",$1/$2*100)+0;R=R","p}else{if(R=="")R=$0/1000000;else R=R","$0}}END{print time","R >>csv}' /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq /sys/class/kgsl/kgsl-3d0/gpubusy /sys/class/power_supply/battery/current_now
 	elif [ $cpu_type -eq 2 ];then
 		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{print time","substr($1,3,length($1)-4)/1000000 >>csv}' /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/load
 	fi

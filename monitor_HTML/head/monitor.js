@@ -331,9 +331,19 @@ function getthermal(a){
 }
 
 function getgpufreq(){
-	var tmp=[];
+	var tmp=[],series=[];
+	if(gpufreqdata.length == 3){
+		var gpu=[];
+	}
 	for (var i=0; i < gpufreqdata[0].length; i++){
 		tmp.push({x:gpufreqdata[0][i],y:gpufreqdata[1][i]});
+		if(gpufreqdata.length == 3){
+			gpu.push({x:gpufreqdata[0][i],y:gpufreqdata[2][i]});
+		}
 	}
-	return [gpufreqdata[0][0], [{name:'gpu_freq',data:tmp}]]
+	series.push({name:'gpu_freq',data:tmp})
+	if(gpufreqdata.length == 3){
+		series.push({name:'gpu',data:gpu,yAxis: 1})
+	}
+	return [gpufreqdata[0][0], series]
 }
