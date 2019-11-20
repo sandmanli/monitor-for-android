@@ -288,7 +288,7 @@ while true;do
 	if [ $cpu_type -eq 0 ];then
 		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{if(FILENAME=="/sys/class/kgsl/kgsl-3d0/gpubusy"){p=sprintf("%.2f",$1/$2*100)+0;R=R","p}else{if(R=="")R=$0/1000000;else R=R","$0}}END{print time","R >>csv}' /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq /sys/class/kgsl/kgsl-3d0/gpubusy /sys/class/power_supply/battery/current_now
 	elif [ $cpu_type -eq 2 ];then
-		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{print time","substr($1,3,length($1)-4)/1000000 >>csv}' /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/load
+		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{print time","$1/1000000 >>csv}' /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/cur_freq
 	fi
 	#cpu
 	getcpu $cpu_p
@@ -313,3 +313,4 @@ while true;do
 		$bb sleep $4
 	fi
 done
+ 
