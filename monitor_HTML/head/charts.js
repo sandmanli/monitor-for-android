@@ -676,10 +676,10 @@ function curfreq(){
 			title: {text: 'Uptime(s)'},
 			floor: data[0]
 		},
-		yAxis: {
-			title: {text:'主频(MHZ)'},
-			floor: 0
-		},
+		yAxis: [
+			{title: {text: '主频(MHZ)'},floor:0},
+			{title: {text: '%'},min:0,opposite: true}
+		],
 		legend: {
 			layout: 'vertical',
 			align: 'right',
@@ -873,6 +873,12 @@ function updatecharts(a){
 			document.getElementById("cur_freq").style.display="";
 			curfreq()
 		};
+		if(csvData[11] == 0){
+			document.getElementById("gpu_freq").style.display="none"
+		}else{
+			document.getElementById("gpu_freq").style.display="";
+			gpufreq()
+		};
 		if(csvData[2] == 0){
 			document.getElementById("cpu").style.display="none"
 		}else{
@@ -965,12 +971,6 @@ function updatecharts(a){
 				thermallist();
 			};
 			thermal(sensor)
-		};
-		if(csvData[11] == 0){
-			document.getElementById("gpu_freq").style.display="none"
-		}else{
-			document.getElementById("gpu_freq").style.display="";
-			gpufreq()
 		};
 }
 

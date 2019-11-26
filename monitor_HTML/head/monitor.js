@@ -317,7 +317,20 @@ function getcurfreq(){
 		for (var i=0; i < curfreqdata[0].length; i++){
 			tmp.push({x:curfreqdata[0][i],y:curfreqdata[1][j][i]});
 		}
-		series.push({name:'cpu' + j,data:tmp});
+		series.push({name:'cpufreq' + j,data:tmp});
+	}
+	if(csvData[12]==1){
+		for (var j=0; j < cpusdata[1].length; j++){
+			var tmp=[];
+			for (var i=0; i < cpusdata[0].length; i++){
+				tmp.push({x:cpusdata[0][i],y:cpusdata[1][j][i]});
+			}
+			if(j==0){
+				series.push({name:'cpu',data:tmp,yAxis: 1});
+			}else{
+				series.push({name:'cpu' + (j-1),data:tmp,yAxis: 1});
+			}
+		}
 	}
 	return [curfreqdata[0][0], series]
 }

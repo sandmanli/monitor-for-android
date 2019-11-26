@@ -73,7 +73,7 @@ get_meminfo(){
 if [ ! -f $monitor/mem2.csv ];then
 	echo uptime,$mem2 >$monitor/mem2.csv
 fi
-dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$packages" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
+dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$packages|" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
 	l=split(mem,O,","); \
 	mem="" \
 } \
@@ -83,7 +83,7 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 	gsub(/ Services/,"_Services",$0); \
 	gsub(/K: /," kB: ",$0); \
 	if(state==1){ \
-		if($3"|"!~packages){ \
+		if(packages!~$3"|"){ \
 			R=time","$3","$1","$5; \
 			if(type==1){ \
 				l=split($3,Check,"."); \
@@ -157,6 +157,15 @@ local tmp=`$bb top -b -n 1|$bb grep -E -v "busybox|Shutdown thread"|$bb sed '2s/
 echo "$tmp"|$bb awk -F"{" -v S="}" -v T="\"" '{if(NF==1)print $0",,";if(NF==2)print $1","T$2T",";if(NF==3)print $1","T$2" "$3T",";if(NF==4&&$3=="")print $1$4",,"T$2T;if(NF==4&&$3!="")print $1","T$2" "$3S$4T",";if(NF>4&&$3==""){a=$5;if(NF>5)for(i=6;i<=NF;i++)a=a S $i;print $1$4","T a T","T$2T};if(NF>4&&$3!=""){a=$4;if(NF>4)for(i=5;i<=NF;i++)a=a S $i;print $1","T$2" "$3" "a T","}}' >>$monitor/cpuinfo.csv
 }
 
+getCPU(){
+if [ "${cpuTime}a" != "a" ];then
+	cpuTime=`$bb awk '$1~"cpu"{printf $2" "$3" "$4" "$5" "$6" "$7" "$8" "}' /proc/stat`
+	$bb sleep 1
+fi
+$bb awk -v time="$uptime" -v csv="$monitor/cpus.csv" -v cpu="$cpuTime" 'BEGIN{split(cpu,D," ")}{if($1~"cpu"){if(i=="")i=0;else i+=1;sum=$2-D[1+7*i]+$3-D[2+7*i]+$4-D[3+7*i]+$5-D[4+7*i]+$6-D[5+7*i]+$7-D[6+7*i]+$8-D[7+7*i];R=R","sprintf("%.2f",100-($5-D[4+7*i])*100/sum)+0}}END{print time R>>csv}' /proc/stat
+cpuTime=`$bb awk '$1~"cpu"{printf $2" "$3" "$4" "$5" "$6" "$7" "$8" "}' /proc/stat`
+}
+
 getFPS(){
 local KPI=100
 echo "FU(s),LU(s),Date:$1,FPS:$2,Frames,jank,jank2,MFS(ms),OKT:$KPI,SS(%),WN" >$monitor/fps_window.csv
@@ -228,7 +237,7 @@ fi
 echo "uptime,PID,PPID,VSZ,RSS,COMMAND,Args" >$monitor/meminfo2.csv
 echo "Loop:$4,uptime,Date_Time,DisplayID,FocusedWindow,FocusedApplication,Flags,Type,Pid,uid,frame" >$monitor/windows.csv
 
-CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" '{if(FNR==1)cpu+=1}END{R="uptime,0:"cpu;for(i=1;i<cpu;i++)R=R","i;print R>csv;print cpu}' /sys/devices/system/cpu/cpu*/uevent`
+CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" -v csv1="$monitor/cpus.csv" '{if(FNR==1)cpu+=1}END{R="uptime,0:"cpu;R1="uptime,cpu,0";for(i=1;i<cpu;i++){R=R","i;R1=R1","i};print R>csv;print R1>>csv1;print cpu}' /sys/devices/system/cpu/cpu*/uevent`
 
 mem2=`dumpsys meminfo |$bb awk '{if($0=="")state=0;gsub(/K: /," kB: ",$0);if(state==2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i;if(R=="")R=C;else R=R","C}};if($2=="RAM:"){if($1=="Total")R=R",Total_RAM";else {if($1=="Free")R=R",Free_RAM,Free_cached_pss,Free_cached_kernel,free";else {if($1=="Used")R=R",Used_RAM,used_pss,used_kernel";else {if($1=="Lost")R=R",Lost_RAM"}}}}if($1=="ZRAM:"){R=R",swap_physical_used,swap_for,swap_total"};if($NF=="category:")state=2}END{print R}'`
 
@@ -291,13 +300,14 @@ while true;do
 		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{print time","$1/1000000 >>csv}' /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/cur_freq
 	fi
 	#cpu
+	getCPU
 	getcpu $cpu_p
 	getmem
 	getvss
 	if [ $5 -ge 1 ];then
 		get_meminfo
 	fi
-	get_package $5 >>$monitor/meminfo.csv
+	get_package >>$monitor/meminfo.csv
 	#stop
 	loop=$((loop+1))
 	if [ -f /data/local/tmp/stop ];then

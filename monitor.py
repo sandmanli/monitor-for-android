@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import sys
 import time
+from pandas.core.indexing import length_of_indexer
 
 def log(info):
     print('%s %s'%(dt.datetime.now(), info))
@@ -188,6 +189,13 @@ var thermaldata=%s;
 var gpufreqdata=%s;
 """%tmp[1]
 
+        tmp = self.getData(csvPath,'cpus.csv')
+        charts_out.append(tmp[0])
+        if tmp[0] == 1 :
+            js = js + """
+var cpusdata=%s;
+"""%tmp[1]
+
         js = "var csvData=%s;"%charts_out + js
         f = codecs.open(r'%s'%jsfile, "w", "utf-8")
         f.write('%s'%js)
@@ -211,6 +219,8 @@ var gpufreqdata=%s;
                     data = self.curfreq(checkpath)
                 elif csvName == 'cpu.csv' :
                     data = self.cpu(checkpath)
+                elif csvName == 'cpus.csv' :
+                    data = self.cpus(checkpath)
                 elif csvName == 'cpuinfo.csv' :
                     data = self.cpuinfo(checkpath)
                 elif csvName == 'mem.csv' :
@@ -299,6 +309,18 @@ var gpufreqdata=%s;
             tmp = data[data.columns[i]].astype('Float64').values.tolist()
             series.append(tmp)
         log('cur_freq Finish')
+        return [Time, series]
+    
+    def cpus(self, csvPath):
+        log('cpus.csv')
+        data = pd.read_csv(r'%s'%csvPath, warn_bad_lines=False, error_bad_lines=False, low_memory=False).fillna(value = 0)
+        Time = data['uptime'].values.tolist()
+        cpus = int(data.columns[-1]) +1
+        series = []
+        for i in range(1, cpus+2) :
+            tmp = data[data.columns[i]].astype('Float64').values.tolist()
+            series.append(tmp)
+        log('cpus Finish')
         return [Time, series]
 
     def cpu(self, csvPath):
