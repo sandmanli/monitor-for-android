@@ -73,17 +73,20 @@ get_meminfo(){
 if [ ! -f $monitor/mem2.csv ];then
 	echo uptime,$mem2 >$monitor/mem2.csv
 fi
-dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$packages|" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
+dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$packages" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
 	l=split(mem,O,","); \
+	state=0; \
 	mem="" \
 } \
 { \
 	if($0=="")state=0; \
 	gsub(/\(|\)|Total PSS by |,/,"",$0); \
-	gsub(/ Services/,"_Services",$0); \
-	gsub(/K: /," kB: ",$0); \
+	if(state!=0){ \
+		gsub(/K: /," kB: ",$0); \
+	}; \
 	if(state==1){ \
-		if(packages!~$3"|"){ \
+		gsub(/ Services/,"_Services",$0); \
+		if($3!~packages){ \
 			R=time","$3","$1","$5; \
 			if(type==1){ \
 				l=split($3,Check,"."); \
@@ -107,6 +110,7 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 		} \
 	}; \
 	if($2=="RAM:"){ \
+		state==3; \
 		if($1=="Total"){ \
 			D["Total_RAM"]=substr($3,1,length($3)-1) \
 		}else{ \
@@ -127,6 +131,7 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 		} \
 	}; \
 	if($1=="ZRAM:"){ \
+		state==3; \
 		D["swap_physical_used"]=substr($2,1,length($2)-1); \
 		D["swap_for"]=substr($6,1,length($6)-1); \
 		D["swap_total"]=substr($9,1,length($9)-1) \

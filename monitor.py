@@ -491,7 +491,7 @@ var cpusdata=%s;
                 Views = data_command['Views'].replace('null',0).tolist()
                 Threads = data_command['Threads'].replace('null',0).tolist()
                 if fd_type == 15 :
-                    FD = data_command['FD'].replace('null',0).tolist()
+                    FD = data_command['FD'].replace('null',0).astype('Int32').tolist()
             Time[0] = round(Time[0],2)
             Pss[0] = round(Pss[0],2)
             if meminfo_type == 1:
