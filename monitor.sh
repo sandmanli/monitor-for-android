@@ -73,7 +73,12 @@ get_meminfo(){
 if [ ! -f $monitor/mem2.csv ];then
 	echo uptime,$mem2 >$monitor/mem2.csv
 fi
-dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$packages" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
+if [ -z $packages ];then
+	local check="busybox"
+else
+	local check="busybox|$packages"
+fi
+dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="$check" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
 	l=split(mem,O,","); \
 	state=0; \
 	mem="" \
@@ -81,7 +86,7 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 { \
 	if($0=="")state=0; \
 	gsub(/\(|\)|Total PSS by |,/,"",$0); \
-	if(state!=0){ \
+	if(state!=0||$2=="RAM:"||$1=="ZRAM:"){ \
 		gsub(/K: /," kB: ",$0); \
 	}; \
 	if(state==1){ \
@@ -110,7 +115,6 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 		} \
 	}; \
 	if($2=="RAM:"){ \
-		state==3; \
 		if($1=="Total"){ \
 			D["Total_RAM"]=substr($3,1,length($3)-1) \
 		}else{ \
@@ -131,7 +135,6 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="busybox|$pack
 		} \
 	}; \
 	if($1=="ZRAM:"){ \
-		state==3; \
 		D["swap_physical_used"]=substr($2,1,length($2)-1); \
 		D["swap_for"]=substr($6,1,length($6)-1); \
 		D["swap_total"]=substr($9,1,length($9)-1) \
@@ -300,7 +303,7 @@ while true;do
 	dumpsys power|$bb grep -E "mBatteryLevel=|mPlugType"|$bb awk -F "=" -v OFS="," -v time=$uptime -v csv="$monitor/btm.csv" '{if(NR==1)a=$2;else{print time,$2,a >>csv;exit}}'
 	#others
 	if [ $cpu_type -eq 0 ];then
-		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{if(FILENAME=="/sys/class/kgsl/kgsl-3d0/gpubusy"){p=sprintf("%.2f",$1/$2*100)+0;R=R","p}else{if(R=="")R=$0/1000000;else R=R","$0}}END{print time","R >>csv}' /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq /sys/class/kgsl/kgsl-3d0/gpubusy /sys/class/power_supply/battery/current_now
+		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{if(FILENAME=="/sys/class/kgsl/kgsl-3d0/gpubusy"){if($2==0)p=0;else p=sprintf("%.2f",$1/$2*100)+0;R=R","p}else{if(R=="")R=$0/1000000;else R=R","$0}}END{print time","R >>csv}' /sys/class/kgsl/kgsl-3d0/devfreq/cur_freq /sys/class/kgsl/kgsl-3d0/gpubusy /sys/class/power_supply/battery/current_now
 	elif [ $cpu_type -eq 2 ];then
 		$bb awk -v time=$uptime -v csv="$monitor/others.csv" '{print time","$1/1000000 >>csv}' /sys/devices/platform/ff9a0000.gpu/devfreq/ff9a0000.gpu/cur_freq
 	fi
