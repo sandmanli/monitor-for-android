@@ -94,8 +94,8 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="$check" -v me
 		if($3!~packages){ \
 			R=time","$3","$1","$5; \
 			if(type==1){ \
-				l=split($3,Check,"."); \
-				if(l==1){ \
+				i=split($3,Check,"."); \
+				if(i==1){ \
 					cmd="cat /proc/"$5"/cmdline";Args=""; \
 					while(cmd|getline){if($0!=""){if(Args=="")Args=$0; else Args=Args" "$0}} \
 				}
@@ -146,7 +146,7 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="$check" -v me
 	R=D[O[1]]; \
 	for(i=2;i<=l;i++)R=R","D[O[i]]; \
 	print time,R >>csv \
-}'
+}' 2>/dev/null
 }
 
 getmem(){
