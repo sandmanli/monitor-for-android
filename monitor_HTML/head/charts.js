@@ -55,7 +55,7 @@ function BTM(){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -115,7 +115,7 @@ function cpu(){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -147,7 +147,7 @@ function cpuinfolist(){
 	for (var i=0; i < cpuline.length; i++){
 		var v=cpuline[i], opt=$('<option />', {
 			value: [v[0],v[1]],
-			text: v[0] + '(' + v[2] + ')'
+			text: v[0] + '(' + v[2][0] + '|' + v[2][1] + '|' + v[2][2] + ')'
 		});
 		opt.appendTo(el);
 		if(i<5){opt.attr('selected',true)}
@@ -247,7 +247,7 @@ function cpuinfo(a){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -312,7 +312,7 @@ function mem(a){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -376,7 +376,7 @@ function mem2(a){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -395,7 +395,7 @@ function meminfolist(){
 	for (var i=0; i < pssline.length; i++){
 		var v=pssline[i], opt=$('<option />', {
 			value: v[1],
-			text: v[0] + '(' + v[2] + "|" + v[3] + ')'
+			text: v[0] + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
 		});
 		opt.appendTo(el);
 		if(i==0){
@@ -472,7 +472,7 @@ function meminfo(a){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -491,7 +491,7 @@ function meminfo2list(){
 	for (var i=0; i < vssline.length; i++){
 		var v=vssline[i], opt=$('<option />', {
 			value: v[1],
-			text: v[0] + '(' + v[2] + "|" + v[3] + ')'
+			text: v[0] + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
 		});
 		opt.appendTo(el);
 		if(i==0){
@@ -568,7 +568,7 @@ function meminfo2(a){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -657,7 +657,7 @@ function FPS(a) {
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -716,7 +716,7 @@ function curfreq(){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -803,7 +803,7 @@ function thermal(a){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 
@@ -862,7 +862,7 @@ function gpufreq(){
 			}
 		},
 		series: data[1],
-		exporting: {enabled: false}
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
 

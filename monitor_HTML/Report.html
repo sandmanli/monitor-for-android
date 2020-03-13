@@ -7,6 +7,8 @@
 <link rel="stylesheet" type="text/css" href="head/style.css" />
 <script type="text/javascript" src="head/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="head/highcharts-4.2.1.js"></script>
+<script type="text/javascript" src="head/exporting.js"></script>
+<script type="text/javascript" src="head/export-csv.js"></script>
 <script type="text/javascript" src="head/jquery-ui.min.js"></script>
 <script type="text/javascript" src="head/jquery.multiselect.js"></script>
 <script type="text/javascript" src="head/jquery.multiselect.filter.js"></script>
@@ -143,6 +145,18 @@ $(function(){
 });
 
 $(document).ready(function(){
+	Highcharts.setOptions({
+		lang: {
+			printChart: "打印图表",
+			downloadJPEG: "下载JPEG 图片",
+			downloadPDF: "下载PDF文档",
+			downloadPNG: "下载PNG 图片",
+			downloadSVG: "下载SVG 矢量图",
+			exportButtonTitle: "导出图片",
+			downloadCSV:"下载csv格式文件",
+			downloadXLS:"下载XLS格式文件"
+		}
+	});
 	Highcharts.setOptions(themeArr[4]);
 	datajs="data/" + caselist[Case][0] + "_" + caselist[Case][1][monitor] + ".js"
 	charts()
@@ -174,7 +188,7 @@ $(document).ready(function(){
 	<div id="cur_freq" class="div4"></div>
 	<div id="gpu_freq" class="div4"></div>
 	<div id="cpu" class="div4"></div>
-	<div id="cpu_menu" class="div5"><select id="cpuinfolist" multiple="multiple" size="5"></select>（排序方式：CPU最大值降序排列，括号中数字。）</div>
+	<div id="cpu_menu" class="div5"><select id="cpuinfolist" multiple="multiple" size="5"></select>（排序方式：CPU最大值降序排列，括号中数字“最大值|均值|中位值”。）</div>
 	<div id="cpuinfo" class="div4"></div>
 	<div id="mem_menu" class="div5">
 		<select id="mem_select" onchange="mem(this.value)">
@@ -193,9 +207,9 @@ $(document).ready(function(){
 		</select>
 	</div>
 	<div id="mem2" class="div6"></div>
-	<div id="meminfo_menu" class="div5"><select id="meminfo_select" multiple="multiple" size="5" onchange="meminfo([this.value])"></select>（排序方式：Pss最大值-最小值降序排列，括号中数字“PSS极值差|PSS最大值”，单位M。）</div>
+	<div id="meminfo_menu" class="div5"><select id="meminfo_select" multiple="multiple" size="5" onchange="meminfo([this.value])"></select>（排序方式：Pss最大值-最小值降序排列，括号中数字“PSS极值差|最大值|均值|中位值”，单位M。）</div>
 	<div id="meminfo" class="div4"></div>
-	<div id="meminfo2_menu" class="div5"><select id="meminfo2_select" multiple="multiple" size="5" onchange="meminfo2([this.value])"></select>（排序方式：VSZ最大值-最小值降序排列，括号中数字“VSZ极值差|VSZ最大值”，单位M。）</div>
+	<div id="meminfo2_menu" class="div5"><select id="meminfo2_select" multiple="multiple" size="5" onchange="meminfo2([this.value])"></select>（排序方式：VSZ最大值-最小值降序排列，括号中数字“VSZ极值差|最大值|均值|中位值”，单位M。）</div>
 	<div id="meminfo2" class="div4"></div>
 	<div id="btm" class="div4"></div>
 	<div id="fps_menu" class="div5"><select id="fps_select" multiple="multiple" size="5" onchange="FPS([this.value])"></select>（格式：窗口名_*，SurfaceFlinger监控窗口的窗口名, 多个同名窗口*；System为系统动效）</div>

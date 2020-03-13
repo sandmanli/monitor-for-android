@@ -14,22 +14,22 @@
 function getcpu(){
 	var usr=[],sys=[],nic=[],idle=[],io=[],irq=[],sirq=[];
 	for (var i=0; i < cpudata[0].length; i++){
-		usr.push([cpudata[0][i],cpudata[1][i]]);
-		sys.push([cpudata[0][i],cpudata[2][i]]);
-		nic.push([cpudata[0][i],cpudata[3][i]]);
-		idle.push([cpudata[0][i],cpudata[4][i]]);
-		io.push([cpudata[0][i],cpudata[5][i]]);
-		irq.push([cpudata[0][i],cpudata[6][i]]);
-		sirq.push([cpudata[0][i],cpudata[7][i]])
+		usr.push([cpudata[0][i],cpudata[1][0][i]]);
+		sys.push([cpudata[0][i],cpudata[2][0][i]]);
+		nic.push([cpudata[0][i],cpudata[3][0][i]]);
+		idle.push([cpudata[0][i],cpudata[4][0][i]]);
+		io.push([cpudata[0][i],cpudata[5][0][i]]);
+		irq.push([cpudata[0][i],cpudata[6][0][i]]);
+		sirq.push([cpudata[0][i],cpudata[7][0][i]])
 	}
 	var series=[];
-	series.push({name:'usr',data:usr});
-	series.push({name:'sys',data:sys});
-	series.push({name:'nic',data:nic});
-	series.push({name:'idle',data:idle});
-	series.push({name:'io',data:io});
-	series.push({name:'irq',data:irq});
-	series.push({name:'sirq',data:sirq})
+	series.push({name:'usr（均值：' + cpudata[1][1] + '，中位值：' + cpudata[1][2] + '）',data:usr});
+	series.push({name:'sys（均值：' + cpudata[2][1] + '，中位值：' + cpudata[2][2] + '）',data:sys});
+	series.push({name:'nic（均值：' + cpudata[3][1] + '，中位值：' + cpudata[3][2] + '）',data:nic});
+	series.push({name:'idle（均值：' + cpudata[4][1] + '，中位值：' + cpudata[4][2] + '）',data:idle});
+	series.push({name:'io（均值：' + cpudata[5][1] + '，中位值：' + cpudata[5][2] + '）',data:io});
+	series.push({name:'irq（均值：' + cpudata[6][1] + '，中位值：' + cpudata[6][2] + '）',data:irq});
+	series.push({name:'sirq（均值：' + cpudata[7][1] + '，中位值：' + cpudata[7][2] + '）',data:sirq})
 	return [cpudata[0][0],series]
 }
 
@@ -326,9 +326,9 @@ function getcurfreq(){
 				tmp.push({x:cpusdata[0][i],y:cpusdata[1][j][i]});
 			}
 			if(j==0){
-				series.push({name:'cpu',data:tmp,yAxis: 1});
+				series.push({name:'cpu（均值：' + cpusdata[2][j][0] + '，中位值：' + cpusdata[2][j][1] + '）',data:tmp,yAxis: 1});
 			}else{
-				series.push({name:'cpu' + (j-1),data:tmp,yAxis: 1});
+				series.push({name:'cpu' + (j-1) + '（均值：' + cpusdata[2][j][0] + '，中位值：' + cpusdata[2][j][1] + '）',data:tmp,yAxis: 1});
 			}
 		}
 	}

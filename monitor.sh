@@ -53,7 +53,7 @@ if [ ! -z "$packages" ];then
 					fi
 					command=`echo $l|$bb awk '{print $2}'`
 					if [ -d /proc/$pid ];then
-						local pss=`dumpsys meminfo $pid|$bb awk -v pid=$pid -v comm=$command -v time=$uptime '{if($1=="**")comm=substr($6,2,length($6)-2);if($1=="Native"){n=n+$(NF-2);o=o+$(NF-1);p=p+$NF}else{if($1=="Dalvik"&&NF>6){d=d+$(NF-2);e=e+$(NF-1);f=f+$NF;if($2=="Heap"){g=g+$(NF-6)}else{g=g+$2}}else{if($1=="TOTAL"){s=$2+0}else{if($1=="Views:"){print time","comm","s","pid","n+0","o+0","p+0","d+0","e+0","f+0","g+0","$2+0}else{if($3=="Views:"){print time","comm","s","pid","n+0","o+0","p+0","d+0","e+0","f+0","g+0","$4+0}}}}}}'`
+						local pss=`dumpsys meminfo $pid|$bb awk -v pid=$pid -v comm=$command -v time=$uptime '{if($1=="**")comm=substr($6,2,length($6)-2);if($1=="Native"){n=n+$(NF-2);o=o+$(NF-1);p=p+$NF}else{if($1=="Dalvik"&&NF>6){d=d+$(NF-2);e=e+$(NF-1);f=f+$NF;if($2=="Heap"){g=g+$3}else{g=g+$2}}else{if($1=="TOTAL"){s=$2+0}else{if($1=="Views:"||$3=="Views:"){if($1=="Views:")v=$2+0;else v=$4+0;print time","comm","s","pid","n+0","o+0","p+0","d+0","e+0","f+0","g+0","v}}}}}'`
 						if [ ! -z "$pss" -a ! -z $Ts ];then
 							if [ $root -eq 1 ];then
 								echo "$pss,$Ts,$FD,\"$arg\""
