@@ -91,7 +91,7 @@ dumpsys meminfo |$bb awk -v type=$awk -v time=$uptime -v packages="$check" -v me
 	}; \
 	if(state==1){ \
 		gsub(/ Services/,"_Services",$0); \
-		if($3!~packages&&$1+0!=0){ \
+		if($3!~packages&&$1+0!=0&&$5+0!=0){ \
 			R=time","$3","$1","$5; \
 			if(type==1){ \
 				i=split($3,Check,"."); \
