@@ -98,7 +98,7 @@ function cpu(){
 			formatter: function (){
 				var s='<small>' + this.x + 's</small><table>';
 				$.each(this.points, function (){
-					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
+					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name.split("（")[0] + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '%</b></td></tr>';
 				});
 				if(csvData[0]==1){
