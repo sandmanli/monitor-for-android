@@ -235,7 +235,7 @@ function getmeminfo(a){
 		series.push({name:'Native_Heap(Size)',data:NHS});
 		series.push({name:'Native_Heap(Alloc)',data:NHA});
 		series.push({name:'Native_Heap(Free)',data:NHF});
-		series.push({name:'Dalvik_Pss',data:DHP});
+		series.push({name:'Dalvik_Other',data:DHP});
 		series.push({name:'Dalvik_Heap(Size)',data:DHS});
 		series.push({name:'Dalvik_Heap(Alloc)',data:DHA});
 		series.push({name:'Dalvik_Heap(Free)',data:DHF});

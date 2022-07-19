@@ -46,7 +46,7 @@ function BTM(){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -106,7 +106,7 @@ function cpu(){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -238,7 +238,7 @@ function cpuinfo(a){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -303,7 +303,7 @@ function mem(a){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -367,7 +367,7 @@ function mem2(a){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -463,7 +463,7 @@ function meminfo(a){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -559,7 +559,7 @@ function meminfo2(a){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -707,7 +707,7 @@ function curfreq(){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -794,7 +794,7 @@ function thermal(a){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -853,7 +853,7 @@ function gpufreq(){
 					if(p>=0){
 						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
 						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedApplication:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
