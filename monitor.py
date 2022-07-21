@@ -281,12 +281,13 @@ var cpusdata=%s;
 	def Windows(self, csvPath):
 		log('windows.csv')
 		data = pd.read_csv(r'%s'%csvPath, warn_bad_lines=False, error_bad_lines=False, low_memory=False).fillna(value = 'null')
+		data = data[data['DisplayID'].values == 0]
 		Time = data['uptime'].astype('Float64').values.tolist()
 		Date_Time = data['Date_Time'].values.tolist()
 		FocusedWindow = data['FocusedWindow'].values.tolist()
-		FocusedApplication = data['FocusedApplication'].values.tolist()
+		FocusedActivity = data['FocusedActivity'].values.tolist()
 		log('windows Finish')
-		return [Time, Date_Time, FocusedWindow, FocusedApplication]
+		return [Time, Date_Time, FocusedWindow, FocusedActivity]
 
 	def btm(self, csvPath):
 		log('btm.csv')
@@ -491,7 +492,7 @@ var cpusdata=%s;
 				NHS = (data_command['Native_Heap(Size)'].replace('null',0)/1024).values.tolist()
 				NHA = (data_command['Native_Heap(Alloc)'].replace('null',0)/1024).values.tolist()
 				NHF = (data_command['Native_Heap(Free)'].replace('null',0)/1024).values.tolist()
-				DHP = (data_command['Dalvik_Pss'].replace('null',0)/1024).values.tolist()
+				DHP = (data_command['Dalvik_Other'].replace('null',0)/1024).values.tolist()
 				DHS = (data_command['Dalvik_Heap(Size)'].replace('null',0)/1024).values.tolist()
 				DHA = (data_command['Dalvik_Heap(Alloc)'].replace('null',0)/1024).values.tolist()
 				DHF = (data_command['Dalvik_Heap(Free)'].replace('null',0)/1024).values.tolist()
