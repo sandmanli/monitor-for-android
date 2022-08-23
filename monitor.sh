@@ -148,6 +148,8 @@ $bb ps -o pid,ppid,vsz,rss,args|$bb sed 's/{.*.} //g'|$bb awk -v OFS="," -v time
 
 getcpu(){
 $bb top -b -n 1|$bb grep -E -v "busybox|Shutdown thread"|$bb awk -v time="$uptime" -v csv="$monitor/cpu.csv" -v csv2="$monitor/cpuinfo.csv" '{ \
+	gsub(" <  ","<  ",$0); \
+	gsub(" >  ",">  ",$0); \
 	gsub("%","",$0); \
 	gsub("\.0 "," ",$0); \
 	if(NR==2) print time","$2","$4","$6","$8","$10","$12","$14 >>csv; \
@@ -242,6 +244,7 @@ if [ ! -z "$2" ];then
 	getFPS "$2" 60 &
 fi
 
+getCPU
 while true;do
 	date_time="`echo $EPOCHREALTIME|$bb awk -F. '{print strftime("%F %T",$1+8*3600)"."substr($2,1,3)}'`"
 	uptime="`$bb awk '{print $1}' /proc/uptime`"
