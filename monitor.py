@@ -339,7 +339,7 @@ var cpusdata=%s;
 		irq = data['irq'].astype('Float64').tolist()
 		sirq = data['sirq'].astype('Float64').tolist()
 		log('cpu Finish')
-		return [Time, [usr, round(np.mean(usr), 1), np.median(usr)], [sys, round(np.mean(sys), 1), np.median(sys)], [nic, round(np.mean(nic), 1), np.median(nic)], [idle, round(np.mean(idle), 1), np.median(idle)], [io, round(np.mean(io), 1), np.median(io)], [irq, round(np.mean(irq), 1), np.median(irq)], [sirq, round(np.mean(sirq), 1), np.median(sirq)]]
+		return [Time, [usr, round(np.mean(usr), 1), round(np.median(usr),1)], [sys, round(np.mean(sys), 1), round(np.median(sys),1)], [nic, round(np.mean(nic), 1), round(np.median(nic),1)], [idle, round(np.mean(idle), 1), round(np.median(idle),1)], [io, round(np.mean(io), 1), round(np.median(io),1)], [irq, round(np.mean(irq), 1), round(np.median(irq),1)], [sirq, round(np.mean(sirq), 1), round(np.median(sirq),1)]]
 
 	def cpuinfo(self, csvPath):
 		log('cpuinfo.csv')
@@ -705,7 +705,7 @@ var cpusdata=%s;
 		if check == 0:
 			return [Time, gpu_freq]
 		else:
-			return [Time, gpu_freq, gpu, np.mean(gpu), np.median(gpu)]
+			return [Time, gpu_freq, gpu, round(np.mean(gpu),1), round(np.median(gpu),1)]
 
 
 
