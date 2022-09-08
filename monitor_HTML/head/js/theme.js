@@ -1237,7 +1237,7 @@ themeArr.push({
 		backgroundColor: null,
         borderWidth: 0,
         plotShadow: true,
-        plotBackgroundImage: 'head/skies.jpg',
+        plotBackgroundImage: 'head/pictures/skies.jpg',
         plotBackgroundColor: {
             linearGradient: [0, 0, 250, 500],
             stops: [

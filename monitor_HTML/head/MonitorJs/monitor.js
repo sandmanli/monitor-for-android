@@ -1,4 +1,38 @@
-﻿function getbtm(){
+﻿function getMemData(a){
+	var data=TotalData.memData
+	switch (a){
+	case 'free':
+		return [data[0], data[1], data[2]];
+		break;
+	case 'all':
+		return [data[0], data[1], data[3], data[6], data[9], data[10], data[11]];
+		break;
+	case 'io':
+		return [data[0], data[9], data[12], data[13]];
+		break;
+	case 'AI':
+		return [data[0], data[3], data[6], data[4], data[7], data[5], data[8]];
+		break;
+	case 'MS':
+		return [data[0], data[9], data[10]];
+		break;
+	}
+}
+
+function getMem2Data(a){
+	var data=TotalData.mem2Data
+	switch (a){
+		case 'mmap':
+			return [data[0], data[1], data[2]];
+			break;
+		case 'other':
+			return [data[0], data[3], data[4]];
+			break;
+	}
+}
+
+function getbtm(){
+	var btm=TotalData.btm
 	var level=[];
 	var PlugType=[];
 	for (var i=0; i < btm[0].length; i++){
@@ -11,8 +45,37 @@
 	return [btm[0][0],series]
 }
 
+function getcpus(){
+	var cpusData=TotalData.cpusData;
+	var tmp=[];
+	for (var j=0; j < cpusData[1].length; j++){
+		tmp.push([])
+	};
+	var min_x;
+	if(cpusData[0][0]>0){
+		min_x=cpusData[0][0]
+	}else{
+		min_x=cpusData[0][1]
+	};
+	var max_x=cpusData[0][cpusData[0].length-1]
+	for (var i=0; i < cpusData[0].length; i++){
+		for (var j=0; j < cpusData[1].length; j++){
+			if(cpusData[0][j]>0){
+				tmp[j].push([cpusData[0][i],cpusData[1][j][i]])
+			}
+		}
+	}
+	var series=[];
+	series.push({name:'cpu（均值：' + cpusData[2][0][0] + '，中位值：' + cpusData[2][0][1] + '）',data:tmp[0]});
+	for (var j=0; j < cpusData[1].length-1; j++){
+		series.push({name:'cpu' + j + '（均值：' + cpusData[2][j+1][0] + '，中位值：' + cpusData[2][j+1][1] + '）',data:tmp[j+1]})
+	};
+	return [min_x,max_x,series]
+}
+
 function getcpu(){
 	var usr=[],sys=[],nic=[],idle=[],io=[],irq=[],sirq=[];
+	var cpudata=TotalData.cpuData;
 	for (var i=0; i < cpudata[0].length; i++){
 		usr.push([cpudata[0][i],cpudata[1][0][i]]);
 		sys.push([cpudata[0][i],cpudata[2][0][i]]);
@@ -38,7 +101,7 @@ function getcpuinfo(list){
 	for (var i = 0; i < list.length; i++){
 		var cpu=[];
 		var p=list[i][1];
-		var cpuinfo=getcpuinfodata(p-1);
+		var cpuinfo=TotalData.cpuInfo[p-1];
 		tat.push([cpuinfo[0],cpuinfo[2],cpuinfo[3]]);
 		for (var j=0; j < cpuinfo[0].length; j++){
 			if(isArray(cpuinfo[1][j]) == false){cpu.push({x:cpuinfo[0][j],y:cpuinfo[1][j]})}else{
@@ -61,24 +124,21 @@ function getcpuinfo(list){
 }
 
 function getmem(a){
-	var data=getmemdata(a);
+	var data=getMemData(a);
 	var series=[];
 	switch (a){
 		case 'free':
 			var free=[],memfree=[],buffers=[],cached=[];
-			if(data[2].length == 4){var CMA=[]}
 			for (var i=0; i < data[0].length; i++){
 				free.push({x:data[0][i],y:data[1][i]});
 				memfree.push({x:data[0][i],y:data[2][0][i]});
 				buffers.push({x:data[0][i],y:data[2][1][i]});
 				cached.push({x:data[0][i],y:data[2][2][i]});
-				if(data[1].length == 4){CMA.push({x:data[0][i],y:data[2][3][i]})}
 			}
-			series.push({name:'Available_Memory',data:free});
+			series.push({name:'MemAvailable',data:free});
 			series.push({name:'MemFree',data:memfree});
 			series.push({name:'Buffers',data:buffers});
 			series.push({name:'Cached',data:cached});
-			if(data[1].length == 4){series.push({name:'CMA_Free',data:CMA})}
 			break;
 		case 'all':
 			var free=[],active=[],inactive=[],io=[],mapped=[],slab=[];
@@ -90,7 +150,7 @@ function getmem(a){
 				mapped.push({x:data[0][i],y:data[5][i]});
 				slab.push({x:data[0][i],y:data[6][i]})
 			}
-			series.push({name:'Available_Memory',data:free});
+			series.push({name:'MemAvailable',data:free});
 			series.push({name:'Active',data:active});
 			series.push({name:'Inactive',data:inactive});
 			series.push({name:'io',data:io});
@@ -138,7 +198,7 @@ function getmem(a){
 }
 
 function getmem2(a){
-	var data=getmem2data(a);
+	var data=getMem2Data(a);
 	var series=[];
 	for (var l=0; l < data[1].length; l++){
 		var tmp=[];
@@ -151,7 +211,7 @@ function getmem2(a){
 }
 
 function getmeminfo(a){
-	var data=getmeminfodata(a);
+	var data=TotalData.memInfo[a];
 	var ta=[],series=[],pss=[],NHS=[],NHA=[],NHF=[],DHP=[],DHS=[],DHA=[],DHF=[],Views=[],Threads=[],type=1,FD=[];
 	if(data[data.length-1].length == 0){
 		type=0
@@ -250,7 +310,7 @@ function getmeminfo(a){
 }
 
 function getmeminfo2(a){
-	var data=getvssdata(a);
+	var data=TotalData.psMeminfo[a];
 	var ta=[],series=[],vsz=[],rss=[];
 	ta.push(data[0]);
 	ta.push(data[1]);
@@ -280,6 +340,7 @@ function getmeminfo2(a){
 }
 
 function getFPS(a){
+	var fpsdata=TotalData.fpsData
 	var fps=[], OKTF=[], jank_percent=[], SS=[], args=[];
 	args.push(fpsdata[a][1]);
 	args.push(fpsdata[a][2]);
@@ -312,51 +373,55 @@ function getFPS(a){
 
 function getcurfreq(){
 	var series=[];
-	for (var j=0; j < curfreqdata[1].length; j++){
+	var curFreqData=TotalData.curFreqData
+	for (var j=0; j < curFreqData[1].length; j++){
 		var tmp=[];
-		for (var i=0; i < curfreqdata[0].length; i++){
-			tmp.push({x:curfreqdata[0][i],y:curfreqdata[1][j][i]});
+		for (var i=0; i < curFreqData[0].length; i++){
+			tmp.push({x:curFreqData[0][i],y:curFreqData[1][j][i]});
 		}
 		series.push({name:'cpufreq' + j,data:tmp});
 	}
-	if(csvData[12]==1){
-		for (var j=0; j < cpusdata[1].length; j++){
+	if(csvData.cpus==1){
+		var cpusData=TotalData.cpusData
+		for (var j=0; j < cpusData[1].length; j++){
 			var tmp=[];
-			for (var i=0; i < cpusdata[0].length; i++){
-				tmp.push({x:cpusdata[0][i],y:cpusdata[1][j][i]});
+			for (var i=0; i < cpusData[0].length; i++){
+				tmp.push({x:cpusData[0][i],y:cpusData[1][j][i]});
 			}
 			if(j==0){
-				series.push({name:'cpu（均值：' + cpusdata[2][j][0] + '，中位值：' + cpusdata[2][j][1] + '）',data:tmp,yAxis: 1});
+				series.push({name:'cpu（均值：' + cpusData[2][j][0] + '，中位值：' + cpusData[2][j][1] + '）',data:tmp,yAxis: 1});
 			}else{
-				series.push({name:'cpu' + (j-1) + '（均值：' + cpusdata[2][j][0] + '，中位值：' + cpusdata[2][j][1] + '）',data:tmp,yAxis: 1});
+				series.push({name:'cpu' + (j-1) + '（均值：' + cpusData[2][j][0] + '，中位值：' + cpusData[2][j][1] + '）',data:tmp,yAxis: 1});
 			}
 		}
 	}
-	return [curfreqdata[0][0], series]
+	return [curFreqData[0][0], series]
 }
 
 function getthermal(a){
 	var tmp=[];
-	for (var i=0; i < thermaldata[0].length; i++){
-		tmp.push({x:thermaldata[0][i],y:thermaldata[2][a][i]});
+	var thermalData=TotalData.thermalData
+	for (var i=0; i < thermalData[0].length; i++){
+		tmp.push({x:thermalData[0][i],y:thermalData[2][a][i]});
 	}
-	return [thermaldata[0][0], [{name:thermaldata[1][a],data:tmp}]]
+	return [thermalData[0][0], [{name:thermalData[1][a],data:tmp}]]
 }
 
 function getgpufreq(){
 	var tmp=[],series=[];
-	if(gpufreqdata.length == 3){
+	var gpuFreqData = TotalData.gpuFreqData
+	if(gpuFreqData.length == 3){
 		var gpu=[];
 	}
-	for (var i=0; i < gpufreqdata[0].length; i++){
-		tmp.push({x:gpufreqdata[0][i],y:gpufreqdata[1][i]});
-		if(gpufreqdata.length == 3){
-			gpu.push({x:gpufreqdata[0][i],y:gpufreqdata[2][i]});
+	for (var i=0; i < gpuFreqData[0].length; i++){
+		tmp.push({x:gpuFreqData[0][i],y:gpuFreqData[1][i]});
+		if(gpuFreqData.length == 3){
+			gpu.push({x:gpuFreqData[0][i],y:gpuFreqData[2][i]});
 		}
 	}
 	series.push({name:'gpu_freq',data:tmp})
-	if(gpufreqdata.length == 3){
+	if(gpuFreqData.length == 3){
 		series.push({name:'gpu',data:gpu,yAxis: 1})
 	}
-	return [gpufreqdata[0][0], series]
+	return [gpuFreqData[0][0], series]
 }

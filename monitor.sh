@@ -8,6 +8,31 @@ fi
 #root
 root=`id|$bb grep -c root`
 
+getwindow(){
+	dumpsys input|$bb grep " name="|$bb awk -v OFS="," -v loop=$loop -v time=$uptime -v date="$date_time" -v csv="$monitor/windows.csv" '{ \
+		if($1~/displayId/){ \
+			if($2~/ActivityRecord/)A[substr($1,11,length($1)-11)]=$4 \
+		}else{ \
+			if($2~"SurfaceView")W="SurfaceView-"substr($4,1,length($4)-2);else W=substr($4,1,length($4)-3); \
+			if($10=="visible=true,"){ \
+				D=substr($5,11,length($5)-11); \
+				for(i=12;i<=NF;i++){ \
+					if($i~"flags")F=substr($i,7,length($i)-7); \
+					if($i~"type")T=substr($i,6,length($i)-6); \
+					if($i~"frame"){ \
+						S=substr($i,7,length($i)-7); \
+						gsub("\]","",S); \
+						gsub("\\[",",",S) \
+					}; \
+					if($i~"ownerPid")P=substr($i,10,length($i)-10); \
+					if($i~"ownerUid")U=substr($i,10,length($i)-10) \
+				}; \
+				if($8=="hasFocus=true,")print loop,time,date,D,W,A[D],F,T,P,U,"\""S"\"" >>csv \
+			} \
+		} \
+	}'
+}
+
 get_package(){
 if [ ! -z "$packages" ];then
 	local grep_str="`echo $packages|$bb sed 's/\./\\\\./g;s/\[/\\\[/g;s/\]/\\\]/g'`"
@@ -136,7 +161,26 @@ dumpsys meminfo |$bb awk -v time=$uptime -v packages="$check" -v mem="$mem2" -v 
 }
 
 getmem(){
-local info="`$bb awk -v OFS=","  'BEGIN{r=0}{if($1=="MemFree:")a=$2;if($1=="Buffers:")b=$2;if($1=="Cached:")c=$2;if($1=="Active:")e=$2;if($1=="Inactive:")f=$2;if($1=="Active(anon):")g=$2;if($1=="Inactive(anon):")h=$2;if($1=="Active(file):")i=$2;if($1=="Inactive(file):")j=$2;if($1=="Dirty:")k=$2;if($1=="Writeback:")l=$2;if($1=="Mapped:")m=$2;if($1=="Slab:")n=$2}END{print a,b,c,e,f,g,h,i,j,k,l,m,n}' /proc/meminfo`"
+local info="`$bb awk -v OFS=","  'BEGIN{ \
+	r=0 \
+}{ \
+	if($1=="MemFree:")a=$2; \
+	if($1=="Buffers:")b=$2; \
+	if($1=="Cached:")c=$2; \
+	if($1=="MemAvailable:")d=$2; \
+	if($1=="Active:")e=$2; \
+	if($1=="Inactive:")f=$2; \
+	if($1=="Active(anon):")g=$2; \
+	if($1=="Inactive(anon):")h=$2; \
+	if($1=="Active(file):")i=$2; \
+	if($1=="Inactive(file):")j=$2; \
+	if($1=="Dirty:")k=$2; \
+	if($1=="Writeback:")l=$2; \
+	if($1=="Mapped:")m=$2; \
+	if($1=="Slab:")n=$2 \
+}END{ \
+	print a,b,c,d,e,f,g,h,i,j,k,l,m,n \
+}' /proc/meminfo`"
 if [ ! -z "$info" ];then
 	echo "$uptime,$info" >>$monitor/mem.csv
 fi
@@ -148,8 +192,6 @@ $bb ps -o pid,ppid,vsz,rss,args|$bb sed 's/{.*.} //g'|$bb awk -v OFS="," -v time
 
 getcpu(){
 $bb top -b -n 1|$bb grep -E -v "busybox|Shutdown thread"|$bb awk -v time="$uptime" -v csv="$monitor/cpu.csv" -v csv2="$monitor/cpuinfo.csv" '{ \
-	gsub(" <  ","<  ",$0); \
-	gsub(" >  ",">  ",$0); \
 	gsub("%","",$0); \
 	gsub("\.0 "," ",$0); \
 	if(NR==2) print time","$2","$4","$6","$8","$10","$12","$14 >>csv; \
@@ -202,7 +244,7 @@ done
 ${testresult="/data/local/tmp/"} 2>/dev/null
 monitor="$testresult/$1"
 if [ -d $monitor ];then
-    $bb rm -r $monitor
+	$bb rm -r $monitor
 fi
 mkdir -p $monitor/threads
 threads=0
@@ -222,7 +264,7 @@ echo uptime="`$bb awk -F. '{print $1}' /proc/uptime`" >>$monitor/info.log
 #csv
 echo "uptime,usr,sys,nic,idle,io,irq,sirq" >$monitor/cpu.csv
 echo "uptime,PID,%CPU,Command,args,Thread" >$monitor/cpuinfo.csv
-echo "uptime:$4,MemFree,Buffers,Cached,Active,Inactive,Active(anon),Inactive(anon),Active(file),Inactive(file),Dirty,Writeback,Mapped,Slab" >$monitor/mem.csv
+echo "uptime:$4,MemFree,Buffers,Cached,MemAvailable,Active,Inactive,Active(anon),Inactive(anon),Active(file),Inactive(file),Dirty,Writeback,Mapped,Slab" >$monitor/mem.csv
 
 if [ $root -eq 1 ];then
 	mkdir -p $monitor/FDs
@@ -244,12 +286,13 @@ if [ ! -z "$2" ];then
 	getFPS "$2" 60 &
 fi
 
+uptime="`$bb awk '{print $1}' /proc/uptime`"
 getCPU
 while true;do
 	date_time="`echo $EPOCHREALTIME|$bb awk -F. '{print strftime("%F %T",$1+8*3600)"."substr($2,1,3)}'`"
 	uptime="`$bb awk '{print $1}' /proc/uptime`"
 	#windows.csv
-	dumpsys input|$bb grep " name="|$bb awk -v OFS="," -v loop=$loop -v time=$uptime -v date="$date_time" -v csv="$monitor/windows.csv" '{if($1~/displayId/){if($2~/ActivityRecord/)A[substr($1,11,length($1)-11)]=$4}{if($2~"SurfaceView")W="SurfaceView-"substr($4,1,length($4)-2);else W=substr($4,1,length($4)-3);if($10=="visible=true,"){D=substr($5,11,length($5)-11);for(i=12;i<=NF;i++){if($i~"flags")F=substr($i,7,length($i)-7);if($i~"type")T=substr($i,6,length($i)-6);if($i~"frame"){S=substr($i,7,length($i)-7);gsub("\]","",S);gsub("\\[",",",S)};if($i~"ownerPid")P=substr($i,10,length($i)-10);if($i~"ownerUid")U=substr($i,10,length($i)-10)};if($8=="hasFocus=true,")print loop,time,date,D,W,A[D],F,T,P,U,"\""S"\"" >>csv}}}'
+	getwindow
 	#cpu
 	getCPU
 	getcpu

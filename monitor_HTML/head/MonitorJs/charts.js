@@ -41,12 +41,12 @@ function BTM(){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -55,6 +55,67 @@ function BTM(){
 			}
 		},
 		series: data[1],
+		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
+	});
+}
+
+var chart_cpus=null;
+function cpus(){
+	if(chart_cpus != null){chart_cpus.destroy()}
+	var data=getcpus();
+	chart_cpus=new Highcharts.Chart({
+		chart: {
+			renderTo: 'cpus',
+			type: 'line'
+		},
+		title: {text: 'CPU多核负载走势图'},
+		credits: {enabled: false},
+		xAxis: {
+			title: {text: 'Uptime(s)'},
+			floor: data[0],
+			max: data[1]
+		},
+		yAxis: {
+			title: {text:'cpus(%)'},
+			floor: 0,
+			max: 100
+		},
+		legend: {
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'top',
+			x: 0,
+			y: 40,
+		},
+		plotOptions: {
+			line:{
+				turboThreshold:0
+			}
+		},
+		tooltip: {
+			shared: true,
+			crosshairs: true,
+			useHTML: true,
+			formatter: function (){
+				var s='<small>' + this.x + 's</small><table>';
+				$.each(this.points, function (){
+					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name.split("（")[0] + ':</td>' +
+						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '%</b></td></tr>';
+				});
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
+					if(p>=0){
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
+					}
+				}else{
+					s += '</table>';
+				}
+				return s;
+			}
+		},
+		series: data[2],
 		exporting: {buttons: {contextButton: {menuItems: [{text: '导出PNG图片',onclick: function(){this.exportChart()}},{text: '导出csv文件',onclick: function (){this.downloadCSV()}}]}},type:'image/png',sourceWidth:1900,sourceHeight:500}
 	});
 }
@@ -101,12 +162,12 @@ function cpu(){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name.split("（")[0] + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '%</b></td></tr>';
 				});
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -135,7 +196,6 @@ function cpuinfolist(){
 			if(list != null){
 				cpulist=[]
 				for (var i=0; i < list.length; i++){cpulist.push(list[i].split(","))};
-				console.log(cpulist);
 				chart_cpuinfo=null;
 				cpuinfo(cpulist);
 			}
@@ -144,8 +204,8 @@ function cpuinfolist(){
 		label: '查找:',
 		placeholder: '输入关键字'
 	});
-	for (var i=0; i < cpuline.length; i++){
-		var v=cpuline[i], opt=$('<option />', {
+	for (var i=0; i < TotalData.cpuLine.length; i++){
+		var v=TotalData.cpuLine[i], opt=$('<option />', {
 			value: [v[0],v[1]],
 			text: v[0] + '(' + v[2][0] + '|' + v[2][1] + '|' + v[2][2] + ')'
 		});
@@ -233,12 +293,12 @@ function cpuinfo(a){
 					}
 				});
 				s += '<tr><td style="color: '+ color + '">Total:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + total + '%</b></td></tr>';
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -298,12 +358,12 @@ function mem(a){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + 'M</b></td></tr>';
 				});
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -362,12 +422,12 @@ function mem2(a){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + 'M</b></td></tr>';
 				});
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -392,8 +452,8 @@ function meminfolist(){
 		label: '查找:',
 		placeholder: '输入关键字'
 	});
-	for (var i=0; i < pssline.length; i++){
-		var v=pssline[i], opt=$('<option />', {
+	for (var i=0; i < TotalData.pssLine.length; i++){
+		var v=TotalData.pssLine[i], opt=$('<option />', {
 			value: v[1],
 			text: v[0] + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
 		});
@@ -458,12 +518,12 @@ function meminfo(a){
 				if(arg!='null'){
 					s += '<tr><td style="color: ' + color + '">' + 'ARG:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + arg +'</td>' + '</b></td></tr>';
 				}
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -488,8 +548,8 @@ function meminfo2list(){
 		label: '查找:',
 		placeholder: '输入关键字'
 	});
-	for (var i=0; i < vssline.length; i++){
-		var v=vssline[i], opt=$('<option />', {
+	for (var i=0; i < TotalData.vssLine.length; i++){
+		var v=TotalData.vssLine[i], opt=$('<option />', {
 			value: v[1],
 			text: v[0] + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
 		});
@@ -554,12 +614,12 @@ function meminfo2(a){
 				if(arg!='null'){
 					s += '<tr><td style="color: ' + color + '">' + 'ARG:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + arg +'</td>' + '</b></td></tr>';
 				}
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -573,7 +633,7 @@ function meminfo2(a){
 }
 
 var fpsWindow=0;
-function fpsWindows(){
+function fpsWindow(){
 	var el=$("#fps_select").multiselect({
 		multiple: false,
 		noneSelectedText: "选择窗口",
@@ -586,8 +646,8 @@ function fpsWindows(){
 		placeholder: '输入关键字',
 		autoReset: true
 	});
-	for (var i=0; i < fpslist.length; i++){
-		var v=fpslist[i], opt=$('<option />', {
+	for (var i=0; i < TotalData.fpsList.length; i++){
+		var v=TotalData.fpsList[i], opt=$('<option />', {
 			value: i,
 			text: v
 		});
@@ -702,12 +762,12 @@ function curfreq(){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -789,12 +849,12 @@ function thermal(a){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -848,12 +908,12 @@ function gpufreq(){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
-				if(csvData[0]==1){
-					var p=isHasElement(Windows[0],this.x);
+				if(csvData.Window==1){
+					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
-						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[1][p].replace(' ', '_') + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[2][p] + '</b></td></tr>';
-						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + Windows[3][p] + '</b></td></tr></table>';
+						s += '<tr><td style="color: '+ color + '">Data_Time:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[1][p].replace(' ', '_') + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedWindow:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[2][p] + '</b></td></tr>';
+						s += '<tr><td style="color: '+ color + '">FocusedActivity:</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + TotalData.Window[3][p] + '</b></td></tr></table>';
 					}
 				}else{
 					s += '</table>';
@@ -867,25 +927,31 @@ function gpufreq(){
 }
 
 function updatecharts(a){
-		if(csvData[9] == 0){
+		if(csvData.curFreq == 0){
 			document.getElementById("cur_freq").style.display="none"
+			if(csvData.cpus == 0){
+				document.getElementById("cpus").style.display="none"
+			}else{
+				document.getElementById("cpus").style.display="";
+				cpus()
+			};
 		}else{
 			document.getElementById("cur_freq").style.display="";
 			curfreq()
 		};
-		if(csvData[11] == 0){
+		if(csvData.gpuFreq == 0){
 			document.getElementById("gpu_freq").style.display="none"
 		}else{
 			document.getElementById("gpu_freq").style.display="";
 			gpufreq()
 		};
-		if(csvData[2] == 0){
+		if(csvData.cpu == 0){
 			document.getElementById("cpu").style.display="none"
 		}else{
 			document.getElementById("cpu").style.display="";
 			cpu()
 		};
-		if(csvData[3] == 0){
+		if(csvData.cpuInfo == 0){
 			document.getElementById("cpu_menu").style.display="none";
 			document.getElementById("cpuinfo").style.display="none";
 			$("#cpuinfolist").empty()
@@ -898,7 +964,7 @@ function updatecharts(a){
 			};
 			cpuinfo(cpulist)
 		};
-		if(csvData[4] == 0){
+		if(csvData.mem == 0){
 			document.getElementById("mem_menu").style.display="none";
 			document.getElementById("mem").style.display="none"
 		}else{
@@ -906,7 +972,7 @@ function updatecharts(a){
 			document.getElementById("mem").style.display="";
 			mem(mem_map)
 		};
-		if(csvData[5] == 0){
+		if(csvData.mem2 == 0){
 			document.getElementById("mem2_menu").style.display="none";
 			document.getElementById("mem2").style.display="none"
 		}else{
@@ -914,7 +980,7 @@ function updatecharts(a){
 			document.getElementById("mem2").style.display="";
 			mem2(mem2_map)
 		};
-		if(csvData[6] == 0){
+		if(csvData.memInfo == 0){
 			document.getElementById("meminfo_menu").style.display="none";
 			document.getElementById("meminfo").style.display="none";
 			$("#meminfo_select").empty()
@@ -927,7 +993,7 @@ function updatecharts(a){
 			};
 			meminfo(command);
 		};
-		if(csvData[7] == 0){
+		if(csvData.psMeminfo == 0){
 			document.getElementById("meminfo2_menu").style.display="none";
 			document.getElementById("meminfo2").style.display="none";
 			$("#meminfo2_select").empty()
@@ -940,13 +1006,13 @@ function updatecharts(a){
 			};
 			meminfo2(command2)
 		};
-		if(csvData[1] == 0){
+		if(csvData.btm == 0){
 			document.getElementById("btm").style.display="none"
 		}else{
 			document.getElementById("btm").style.display="";
 			BTM()
 		};
-		if(csvData[8] == 0){
+		if(csvData.fps == 0){
 			document.getElementById("fps_menu").style.display="none";
 			document.getElementById("FPS").style.display="none";
 			$("#fps_select").empty()
@@ -955,11 +1021,11 @@ function updatecharts(a){
 			document.getElementById("FPS").style.display="";
 			if(a==0){
 				$("#fps_select").empty();
-				fpsWindows();
+				fpsWindow();
 			};
 			FPS(fpsWindow)
 		};
-		if(csvData[10] == 0){
+		if(csvData.thermal == 0){
 			document.getElementById("thermal_menu").style.display="none";
 			document.getElementById("THERMAL").style.display="none";
 			$("#thermal_select").empty()
