@@ -187,7 +187,7 @@ function cpuinfolist(){
 		},
 		checkAllText: "全选",
 		uncheckAllText: "全不选",
-		minWidth: 350,
+		minWidth: 300,
 		height: 140,
 		show: ["bounce", 200],
 		hide: ["explode", 1000],
@@ -205,9 +205,12 @@ function cpuinfolist(){
 		placeholder: '输入关键字'
 	});
 	for (var i=0; i < TotalData.cpuLine.length; i++){
-		var v=TotalData.cpuLine[i], opt=$('<option />', {
+		var v=TotalData.cpuLine[i];
+		var textStr=v[0];
+		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
+		var opt=$('<option />', {
 			value: [v[0],v[1]],
-			text: v[0] + '(' + v[2][0] + '|' + v[2][1] + '|' + v[2][2] + ')'
+			text: textStr + '(' + v[2][0] + '|' + v[2][1] + '|' + v[2][2] + ')'
 		});
 		opt.appendTo(el);
 		if(i<5){opt.attr('selected',true)}
@@ -453,9 +456,12 @@ function meminfolist(){
 		placeholder: '输入关键字'
 	});
 	for (var i=0; i < TotalData.pssLine.length; i++){
-		var v=TotalData.pssLine[i], opt=$('<option />', {
+		var v=TotalData.pssLine[i];
+		var textStr=v[0];
+		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
+		var opt=$('<option />', {
 			value: v[1],
-			text: v[0] + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
+			text: textStr + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
 		});
 		opt.appendTo(el);
 		if(i==0){
@@ -549,9 +555,12 @@ function meminfo2list(){
 		placeholder: '输入关键字'
 	});
 	for (var i=0; i < TotalData.vssLine.length; i++){
-		var v=TotalData.vssLine[i], opt=$('<option />', {
+		var v=TotalData.vssLine[i];
+		var textStr=v[0];
+		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
+		var opt=$('<option />', {
 			value: v[1],
-			text: v[0] + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
+			text: textStr + '(' + v[2] + "|" + v[3] + "|" + v[4] + "|" + v[5] + ')'
 		});
 		opt.appendTo(el);
 		if(i==0){
@@ -637,7 +646,7 @@ function fpsWindow(){
 	var el=$("#fps_select").multiselect({
 		multiple: false,
 		noneSelectedText: "选择窗口",
-		minWidth: 350,
+		minWidth: 300,
 		maxWidth: 1000,
 		height: 110,
 		selectedList: 1,
@@ -647,9 +656,11 @@ function fpsWindow(){
 		autoReset: true
 	});
 	for (var i=0; i < TotalData.fpsList.length; i++){
-		var v=TotalData.fpsList[i], opt=$('<option />', {
+		var textStr=TotalData.fpsList[i];
+		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
+		var opt=$('<option />', {
 			value: i,
-			text: v
+			text: textStr
 		});
 		opt.appendTo(el);
 		if(i==0){
@@ -785,7 +796,7 @@ function thermallist(){
 	var el=$("#thermal_select").multiselect({
 		multiple: false,
 		noneSelectedText: "选择sensor",
-		minWidth: 350,
+		minWidth: 300,
 		maxWidth: 1000,
 		height: 110,
 		selectedList: 1,
@@ -795,9 +806,11 @@ function thermallist(){
 		autoReset: true
 	});
 	for (var i=0; i < thermaldata[1].length; i++){
-		var v=thermaldata[1][i], opt=$('<option />', {
+		var textStr=thermaldata[1][i];
+		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
+		var opt=$('<option />', {
 			value: i,
-			text: v
+			text: textStr
 		});
 		opt.appendTo(el);
 		if(i==0){

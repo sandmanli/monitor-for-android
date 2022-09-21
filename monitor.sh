@@ -277,7 +277,7 @@ echo "Loop:$4,uptime,Date_Time,DisplayID,FocusedWindow,FocusedActivity,Flags,Typ
 
 CPUS="`$bb awk -v csv="$monitor/cur_freq.csv" -v csv1="$monitor/cpus.csv" '{if(FNR==1)cpu+=1}END{R="uptime,0:"cpu;R1="uptime,cpu,0";for(i=1;i<cpu;i++){R=R","i;R1=R1","i};print R>csv;print R1>>csv1;print cpu}' /sys/devices/system/cpu/cpu*/uevent`"
 if [ $5 -ge 1 ];then
-	mem2="`dumpsys meminfo |$bb awk '{if($0=="")state=0;gsub(/K: /," kB: ",$0);if(state==2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i;if(R=="")R=C;else R=R","C}};if($2=="RAM:"){if($1=="Total")R=R",Total_RAM";else {if($1=="Free")R=R",Free_RAM,Free_cached_pss,Free_cached_kernel,free";else {if($1=="Used")R=R",Used_RAM,used_pss,used_kernel";else {if($1=="Lost")R=R",Lost_RAM"}}}};if($1=="ZRAM:"){R=R",swap_physical_used,swap_for,swap_total"};if($1=="ION:")R=R",ION";if($NF=="category:")state=2}END{print R}'`"
+	mem2="`dumpsys meminfo |$bb awk '{if($0=="")state=0;gsub(/\(|\)|Total PSS by |,/,"",$0);gsub(/K: /," kB: ",$0);if(state==2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i;if(R=="")R=C;else R=R","C}};if($2=="RAM:"){if($1=="Total")R=R",Total_RAM";else {if($1=="Free")R=R",Free_RAM,Free_cached_pss,Free_cached_kernel,free";else {if($1=="Used")R=R",Used_RAM,used_pss,used_kernel";else {if($1=="Lost")R=R",Lost_RAM"}}}};if($1=="ZRAM:"){R=R",swap_physical_used,swap_for,swap_total"};if($1=="ION:")R=R",ION";if($1=="category:")state=2}END{print R}'`"
 fi
 
 
