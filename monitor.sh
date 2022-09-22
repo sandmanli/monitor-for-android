@@ -103,7 +103,12 @@ if [ -z $packages ];then
 else
 	local check="busybox|$packages"
 fi
-dumpsys meminfo |$bb awk -v time=$uptime -v packages="$check" -v mem="$mem2" -v OFS=, -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
+if [ $root -eq 1 ];then
+	local add=",,,,,,,,,,"
+else
+	local add=",,,,,,,,,"
+fi
+dumpsys meminfo |$bb awk -v time=$uptime -v packages="$check" -v mem="$mem2" -v OFS=, -v add="$add" -v csv=$monitor/mem2.csv -v csv1=$monitor/meminfo.csv 'BEGIN{ \
 	l=split(mem,O,","); \
 	state=0; \
 	mem="" \
@@ -116,7 +121,7 @@ dumpsys meminfo |$bb awk -v time=$uptime -v packages="$check" -v mem="$mem2" -v 
 	}; \
 	if(state==1){ \
 		gsub(/ Services/,"_Services",$0); \
-		if($3!~packages&&$1+0!=0&&$5+0!=0)print time","$3","$1","$5",,,,,,,,,,," >>csv1 \
+		if($3!~packages&&$1+0!=0&&$5+0!=0)print time","$3","$1","$5","add >>csv1 \
 	}else{ \
 		if(state==2){ \
 			C=$3; \

@@ -405,10 +405,12 @@ class Monitor(object):
         log('meminfo.csv')
         fd_type = len(data.columns)
         Command = data['Process_Name'].unique().tolist()
+        log("Command=%s" % Command)
         maxPd = []
         meminfo_data = []
         h = 0
         for c in Command:
+            log("c=%s" % c)
             data_command = data[data['Process_Name'].values == c]
             Time = data_command['uptime'].astype('Float64').values.tolist()
             Pid = data_command['PID'].values.tolist()
