@@ -116,8 +116,10 @@ function getcpuinfo(list){
 					if(j!=cpuinfo[0].length-1){cpu.push(null)};
 				}
 			}
-		}
-		series.push({name:list[i][0],data:cpu});
+		};
+		var textStr=list[i][0];
+		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
+		series.push({name:textStr,data:cpu});
 		cpu=[];
 	}
 	return [tat,series]
