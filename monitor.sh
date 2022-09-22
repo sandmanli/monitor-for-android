@@ -11,6 +11,7 @@ root=`id|$bb grep -c root`
 getwindow(){
 	dumpsys input|$bb grep " name="|$bb awk -v OFS="," -v loop=$loop -v time=$uptime -v date="$date_time" -v csv="$monitor/windows.csv" '{ \
 		if($1~/displayId/){ \
+			gsub(/name=.*.ActivityRecord/,"name=ActivityRecord",$0); \
 			if($2~/ActivityRecord/)A[substr($1,11,length($1)-11)]=$4 \
 		}else{ \
 			if($2~"SurfaceView")W="SurfaceView-"substr($4,1,length($4)-2);else W=substr($4,1,length($4)-3); \
@@ -27,7 +28,7 @@ getwindow(){
 					if($i~"ownerPid")P=substr($i,10,length($i)-10); \
 					if($i~"ownerUid")U=substr($i,10,length($i)-10) \
 				}; \
-				if($8=="hasFocus=true,")print loop,time,date,D,W,A[D],F,T,P,U,"\""S"\"" >>csv \
+				if($0~/hasFocus=true,/)print loop,time,date,D,W,A[D],F,T,P,U,"\""S"\"" >>csv \
 			} \
 		} \
 	}'
@@ -78,7 +79,7 @@ if [ ! -z "$packages" ];then
 					fi
 					command="`echo $l|$bb awk '{print $2}'`"
 					if [ -d /proc/$pid ];then
-						local pss="`dumpsys meminfo $pid|$bb awk -v pid=$pid -v comm=$command -v time=$uptime '{if($1=="**")comm=substr($6,2,length($6)-2);if($1=="Native"&&$2=="Heap"){n=$(NF-2);o=$(NF-1);p=$NF};if($1=="Dalvik"&&$2=="Heap"){d=$(NF-2);e=$(NF-1);f=$NF};if($1=="Dalvik"&&$2=="Other")g=$3;if($1=="TOTAL"&&NF==9)s=$2;if($1=="Views:"){v=$2;print time","comm","s","pid","n+0","o+0","p+0","d+0","e+0","f+0","g+0","v+0}}'`"
+						local pss="`dumpsys meminfo $pid|$bb awk -v pid=$pid -v comm=$command -v time=$uptime '{gsub("TOTAL PSS:","TOTAL_PSS:",$0);if($1=="**")comm=substr($6,2,length($6)-2);if($1=="Native"&&$2=="Heap"){n=$(NF-2);o=$(NF-1);p=$NF};if($1=="Dalvik"&&$2=="Heap"){d=$(NF-2);e=$(NF-1);f=$NF};if($1=="Dalvik"&&$2=="Other")g=$3;if($1=="TOTAL")s=$2;if($1=="Views:"){v=$2;print time","comm","s","pid","n+0","o+0","p+0","d+0","e+0","f+0","g+0","v+0}}'`"
 						if [ ! -z "$pss" -a $Ts -gt 0 ];then
 							if [ $root -eq 1 ];then
 								echo "$pss,$Ts,$FD,\"$arg\""
@@ -248,6 +249,9 @@ done
 #main
 ${testresult="/data/local/tmp/"} 2>/dev/null
 monitor="$testresult/$1"
+if [ -f $monitor ];then
+	$bb rm $monitor
+fi
 if [ -d $monitor ];then
 	$bb rm -r $monitor
 fi
@@ -280,7 +284,52 @@ fi
 echo "uptime,PID,PPID,VSZ,RSS,COMMAND,Args" >$monitor/meminfo2.csv
 echo "Loop:$4,uptime,Date_Time,DisplayID,FocusedWindow,FocusedActivity,Flags,Type,Pid,uid,frame" >$monitor/windows.csv
 
-CPUS="`$bb awk -v csv="$monitor/cur_freq.csv" -v csv1="$monitor/cpus.csv" '{if(FNR==1)cpu+=1}END{R="uptime,0:"cpu;R1="uptime,cpu,0";for(i=1;i<cpu;i++){R=R","i;R1=R1","i};print R>csv;print R1>>csv1;print cpu}' /sys/devices/system/cpu/cpu*/uevent`"
+if [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq ];then
+	cur_freq=1
+	CPUS=`$bb awk -v csv="$monitor/cur_freq.csv" -v csv1="$monitor/cpus.csv" '{if(FNR==1)cpu+=1}END{R="uptime,0:"cpu;R1="uptime,cpu,0";for(i=1;i<cpu;i++){R=R","i;R1=R1","i};print R>csv;print R1>>csv1;print cpu}' /sys/devices/system/cpu/cpu*/uevent`
+else
+	cur_freq=0
+	CPUS="`$bb awk -v csv="$monitor/cur_freq.csv" -v csv1="$monitor/cpus.csv" '{if(FNR==1)cpu+=1}END{R="uptime,0:"cpu;R1="uptime,cpu,0";for(i=1;i<cpu;i++){R=R","i;R1=R1","i};print R>csv;print R1>>csv1;print cpu}' /sys/devices/system/cpu/cpu*/uevent`"
+fi
+
+thermal=0
+if [ -f /sys/devices/virtual/thermal/thermal_zone0/type ];then
+	thermal=1
+	thermal_path=""
+	for i in `ls /sys/devices/virtual/thermal/thermal_zone*/type`;do
+		zone=`echo $i|$bb awk '{split($0,N,"/");print N[6]}'`
+		check=`cat $i 2>/dev/null`
+		if [ ! -z "$check" ];then
+			title=$zone"("$check")"
+		else
+			title=$zone"(unknown)"
+		fi
+		check=`cat /sys/devices/virtual/thermal/$zone/temp 2>/dev/null`
+		if [ ! -z "$check" ];then
+			if [ -z "$thermal_path" ];then
+				thermal_path=/sys/devices/virtual/thermal/$zone/temp
+				thermal_type="uptime,"$title
+				thermal_zones=$zone
+			else
+				thermal_path=$thermal_path" "/sys/devices/virtual/thermal/$zone/temp
+				thermal_type=$thermal_type","$title
+				thermal_zones=$thermal_zones" "$zone
+			fi
+		fi
+	done
+	thermal_type=`echo $thermal_type|$bb sed 's/thermal_zone//g'`
+	echo $thermal_type >$monitor/thermal.csv
+	unset zone
+	unset check
+	unset title
+	unset thermal_type
+fi
+
+power=`dumpsys power|$bb awk -F"=" '$1~/mPlugType|mBatteryLevel/{r+=$2}END{print r}'`
+if [ $power -gt 0 ];then
+	echo "uptime,BatteryLevel,PlugType" >$monitor/btm.csv
+fi
+
 if [ $5 -ge 1 ];then
 	mem2="`dumpsys meminfo |$bb awk '{if($0=="")state=0;gsub(/\(|\)|Total PSS by |,/,"",$0);gsub(/K: /," kB: ",$0);if(state==2){C=$3;if(NF>3){for(i=4;i<=NF;i++)C=C"_"$i;if(R=="")R=C;else R=R","C}};if($2=="RAM:"){if($1=="Total")R=R",Total_RAM";else {if($1=="Free")R=R",Free_RAM,Free_cached_pss,Free_cached_kernel,free";else {if($1=="Used")R=R",Used_RAM,used_pss,used_kernel";else {if($1=="Lost")R=R",Lost_RAM"}}}};if($1=="ZRAM:"){R=R",swap_physical_used,swap_for,swap_total"};if($1=="ION:")R=R",ION";if($1=="category:")state=2}END{print R}'`"
 fi
@@ -296,6 +345,18 @@ getCPU
 while true;do
 	date_time="`echo $EPOCHREALTIME|$bb awk -F. '{print strftime("%F %T",$1+8*3600)"."substr($2,1,3)}'`"
 	uptime="`$bb awk '{print $1}' /proc/uptime`"
+	#cpu freq
+	if [ $cur_freq -eq 1 ];then
+		$bb awk -v cpus=$CPUS -v time=$uptime -v csv="$monitor/cur_freq.csv" '{split(FILENAME,N,"/");r[substr(N[6],4)]=$0/1000}END{R=r[0];for(i=1;i<cpus;i++)R=R","r[i];print time","R >>csv}' /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
+	fi
+	#thermal_zone
+	if [ $thermal -eq 1 ];then
+		$bb awk -v time=$uptime -v TZs="$thermal_zones" -v csv="$monitor/thermal.csv" 'BEGIN{split(TZs,tmp," ")}{split(FILENAME,N,"/");r[N[6]]=$0}END{for(i in tmp){if(R=="")R=r[tmp[i]]+0;else R=R","r[tmp[i]]+0};print time","R >>csv}'  $thermal_path
+	fi
+	#btm.csv
+	if [ $power -gt 0 ];then
+		dumpsys power|$bb awk -v OFS="," -v time=$uptime -v csv="$monitor/btm.csv" '$1~/mBatteryLevel=|mPlugType/{if($1~/mPlugType/)t=substr($1,11,length($1)-10);else l=substr($1,15,length($1)-14)}END{print time,l,t >>csv;}'
+	fi
 	#windows.csv
 	getwindow
 	#cpu

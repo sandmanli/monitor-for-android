@@ -305,10 +305,10 @@ class Monitor(object):
             tmp = len(Uptime)
             p = 1
             d_pid = [Pid[0]]
-            d_times = 0
+            d_times = 1
             for i in range(1, tmp):
                 if Uptime[p] == Uptime[p - 1]:
-                    d_times = d_times + 1
+                    d_times += 1
                     del Uptime[p]
                     d_pid.append(Pid[p])
                     del Pid[p]
@@ -320,7 +320,7 @@ class Monitor(object):
                     del ARG[p]
                     del thread[p]
                 else:
-                    d_times = 0
+                    d_times = 1
                     if Pid[p] != Pid[p - 1] and Pid[p] not in d_pid:
                         d_pid.append(Pid[p])
                         CPU[p] = [CPU[p], 1]
@@ -405,12 +405,10 @@ class Monitor(object):
         log('meminfo.csv')
         fd_type = len(data.columns)
         Command = data['Process_Name'].unique().tolist()
-        log("Command=%s" % Command)
         maxPd = []
         meminfo_data = []
         h = 0
         for c in Command:
-            log("c=%s" % c)
             data_command = data[data['Process_Name'].values == c]
             Time = data_command['uptime'].astype('Float64').values.tolist()
             Pid = data_command['PID'].values.tolist()
@@ -460,7 +458,7 @@ class Monitor(object):
 
             p = 1
             d_pid = [Pid[0]]
-            d_times = 0
+            d_times = 1
             for i in range(1, len(Time)):
                 Time[p] = round(Time[p], 2)
                 Pss[p] = round(Pss[p], 2)
@@ -476,7 +474,7 @@ class Monitor(object):
                     Threads[p] = int(Threads[p])
                 if Time[p] == Time[p - 1]:
                     d_pid.append(Pid[p])
-                    d_times = d_times + 1
+                    d_times += 1
                     if isinstance(Pss[p - 1], list) is False:
                         Pss[p - 1] = [round(Pss[p - 1] + Pss[p], 2), 2, d_times]
                     else:
@@ -507,6 +505,7 @@ class Monitor(object):
                     del Time[p]
                     del ARG[p]
                 else:
+                    d_times = 1
                     if Pid[p] != Pid[p - 1] and Pid[p] not in d_pid:
                         d_pid.append(Pid[p])
                         Pss[p] = [Pss[p], 1]
@@ -558,7 +557,7 @@ class Monitor(object):
                 RSS[p] = round(RSS[p], 3)
                 if Time[p] == Time[p - 1]:
                     d_pid.append(Pid[p])
-                    d_times = d_times + 1
+                    d_times += 1
                     if isinstance(VSZ[p - 1], list) is False:
                         VSZ[p - 1] = [round(VSZ[p - 1] + VSZ[p], 3), 2, d_times]
                     else:
@@ -570,6 +569,7 @@ class Monitor(object):
                     del Time[p]
                     del ARG[p]
                 else:
+                    d_times = 1
                     if Pid[p] != Pid[p - 1] and Pid[p] not in d_pid:
                         d_pid.append(Pid[p])
                         VSZ[p] = [VSZ[p], 1]

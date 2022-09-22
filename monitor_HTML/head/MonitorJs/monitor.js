@@ -97,26 +97,31 @@ function getcpu(){
 }
 
 function getcpuinfo(list){
-	var tat=[],series=[];
+	var tat=[],series=[],pids=[];
 	for (var i = 0; i < list.length; i++){
 		var cpu=[];
 		var p=list[i][1];
 		var cpuinfo=TotalData.cpuInfo[p-1];
-		tat.push([cpuinfo[0],cpuinfo[2],cpuinfo[3]]);
 		for (var j=0; j < cpuinfo[0].length; j++){
-			if(isArray(cpuinfo[1][j]) == false){cpu.push({x:cpuinfo[0][j],y:cpuinfo[1][j]})}else{
+			if(isArray(cpuinfo[1][j]) == false){
+				cpu.push({x:cpuinfo[0][j],y:cpuinfo[1][j]});
+				pids.push("")
+			}else{
 				if(cpuinfo[1][j].length == 2){
 					if(j!=0){cpu.push(null)};
 					cpu.push({x:cpuinfo[0][j],y:cpuinfo[1][j][0],marker:{enabled:true,fillColor:'#FF0000'}})
 					if(j!=cpuinfo[0].length-1){cpu.push(null)};
-				}
+					pids.push("")
+				};
 				if(cpuinfo[1][j].length == 3){
 					if(j!=0){cpu.push(null)};
-					cpu.push({x:cpuinfo[0][j],y:cpuinfo[1][j][0],marker:{enabled:true,fillColor:'#FFFF00'}});
+					cpu.push({x:cpuinfo[0][j],y:cpuinfo[1][j][0],marker:{enabled:true,fillColor:'#FF00FF'}});
 					if(j!=cpuinfo[0].length-1){cpu.push(null)};
+					pids.push(cpuinfo[1][j][2])
 				}
 			}
 		};
+		tat.push([cpuinfo[0],cpuinfo[2],cpuinfo[3],pids]);
 		var textStr=list[i][0];
 		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
 		series.push({name:textStr,data:cpu});
@@ -213,7 +218,7 @@ function getmem2(a){
 }
 
 function getmeminfo(a){
-	var data=TotalData.memInfo[a];
+	var data=TotalData.memInfo[a],pids=[];
 	var ta=[],series=[],pss=[],NHS=[],NHA=[],NHF=[],DHP=[],DHS=[],DHA=[],DHF=[],Views=[],Threads=[],type=1,FD=[];
 	if(data[data.length-1].length == 0){
 		type=0
@@ -255,7 +260,7 @@ function getmeminfo(a){
 					if(type == 1){
 						FD.push(null);
 					}
-				}
+				};
 				pss.push({x:data[1][i],y:data[3][i][0],marker:{enabled:true,fillColor:'#FF0000'}});
 				if(data[0] == 1){
 					NHS.push({x:data[1][i],y:data[6][i],marker:{enabled:true,fillColor:'#FF0000'}});
@@ -267,31 +272,36 @@ function getmeminfo(a){
 					DHF.push({x:data[1][i],y:data[12][i],marker:{enabled:true,fillColor:'#FF0000'}});
 					Views.push({x:data[1][i],y:data[4][i],marker:{enabled:true,fillColor:'#FF0000'}});
 					Threads.push({x:data[1][i],y:data[5][i],marker:{enabled:true,fillColor:'#FF0000'}});
-				}
+				};
 				if(type == 1){
 					FD.push({x:data[1][i],y:data[data.length-1][i],marker:{enabled:true,fillColor:'#FF0000'}});
-				}
+				};
+				pids.push("");
 			}else{
 				if(data[3][i].length == 3){
-					pss.push({x:data[1][i],y:data[3][i][0],marker:{enabled:true,fillColor:'#FFFF00'}});
+					pss.push({x:data[1][i],y:data[3][i][0],marker:{enabled:true,fillColor:'#FF00FF'}});
 					if(data[0] == 1){
-						NHS.push({x:data[1][i],y:data[6][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						NHA.push({x:data[1][i],y:data[7][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						NHF.push({x:data[1][i],y:data[8][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						DHP.push({x:data[1][i],y:data[9][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						DHS.push({x:data[1][i],y:data[10][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						DHA.push({x:data[1][i],y:data[11][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						DHF.push({x:data[1][i],y:data[12][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						Views.push({x:data[1][i],y:data[4][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-						Threads.push({x:data[1][i],y:data[5][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-					}
+						NHS.push({x:data[1][i],y:data[6][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						NHA.push({x:data[1][i],y:data[7][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						NHF.push({x:data[1][i],y:data[8][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						DHP.push({x:data[1][i],y:data[9][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						DHS.push({x:data[1][i],y:data[10][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						DHA.push({x:data[1][i],y:data[11][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						DHF.push({x:data[1][i],y:data[12][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						Views.push({x:data[1][i],y:data[4][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+						Threads.push({x:data[1][i],y:data[5][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+					};
 					if(type == 1){
-						FD.push({x:data[1][i],y:data[data.length-1][i],marker:{enabled:true,fillColor:'#FFFF00'}});
-					}
+						FD.push({x:data[1][i],y:data[data.length-1][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+					};
+					pids.push(data[3][i][2]);
+				}else{
+					pids.push("");
 				}
 			}
 		}
 	}
+	ta.push(pids);
 	series.push({name:'Pss',data:pss})
 	if(data[0] == 1){
 		series.push({name:'Native_Heap(Size)',data:NHS});
@@ -313,13 +323,14 @@ function getmeminfo(a){
 
 function getmeminfo2(a){
 	var data=TotalData.psMeminfo[a];
-	var ta=[],series=[],vsz=[],rss=[];
+	var ta=[],series=[],vsz=[],rss=[],pids=[];
 	ta.push(data[0]);
 	ta.push(data[1]);
 	for (var i=0; i < data[0].length; i++){
 		if(isArray(data[2][i]) == false){
 			vsz.push({x:data[0][i],y:data[2][i]});
 			rss.push({x:data[0][i],y:data[3][i]});
+			pids.push("");
 		}else{
 			if(data[2][i].length == 2){
 				if(i!=0){
@@ -328,14 +339,19 @@ function getmeminfo2(a){
 				}
 				vsz.push({x:data[0][i],y:data[2][i][0],marker:{enabled:true,fillColor:'#FF0000'}});
 				rss.push({x:data[0][i],y:data[3][i],marker:{enabled:true,fillColor:'#FF0000'}});
+				pids.push("");
 			}else{
 				if(data[2][i].length == 3){
-					vsz.push({x:data[0][i],y:data[2][i][0],marker:{enabled:true,fillColor:'#FFFF00'}});
-					rss.push({x:data[0][i],y:data[3][i],marker:{enabled:true,fillColor:'#FFFF00'}});
+					vsz.push({x:data[0][i],y:data[2][i][0],marker:{enabled:true,fillColor:'#FF00FF'}});
+					rss.push({x:data[0][i],y:data[3][i],marker:{enabled:true,fillColor:'#FF00FF'}});
+					pids.push(data[2][i][2]);
+				}else{
+					pids.push("");
 				}
 			}
 		}
-	}
+	};
+	ta.push(pids);
 	series.push({name:'VSZ',data:vsz})
 	series.push({name:'RSS',data:rss})
 	return [ta,series];

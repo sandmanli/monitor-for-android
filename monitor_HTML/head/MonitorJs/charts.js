@@ -50,7 +50,7 @@ function BTM(){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -111,7 +111,7 @@ function cpus(){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -171,7 +171,7 @@ function cpu(){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -271,21 +271,27 @@ function cpuinfo(a){
 				var s='<small>' + this.x + 's</small><table>';
 				$.each(this.points, function (){
 					total=total.add(this.y);
+					var pids="";
 					var arg='null';
 					var Thread='null';
-					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
-						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '%</b></td></tr>';
 					for (var i=P; i < a.length; i++){
 						if(data[1][i].name == this.series.name){
 							P=i+1;
 							var p=isHasElement(data[0][i][0],this.x);
 							if(p != -1){
 								arg=data[0][i][1][p];
-								Thread=data[0][i][2][p]
+								Thread=data[0][i][2][p];
+								pids=data[0][i][3][p]
 							}
 							break;
 						}
-					}
+					};
+					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>';
+					if(pids!=""){
+						s += '<td style="text-align: left; color: '+ color + '"><b>' + this.y + "%(" + pids + "pids)" + '</b></td></tr>';
+					}else{
+						s += '<td style="text-align: left; color: '+ color + '"><b>' + this.y + '%</b></td></tr>';
+					};
 					if(arg != 'null'){
 						s += '<tr><td style="color: ' + this.series.color + '">' + 'ARG:</td>' +
 							'<td style="text-align: left; color: '+ color + '"><b>' + arg +'</td>' + '</b></td></tr>';
@@ -305,7 +311,7 @@ function cpuinfo(a){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -370,7 +376,7 @@ function mem(a){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -434,7 +440,7 @@ function mem2(a){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -515,15 +521,18 @@ function meminfo(a){
 			useHTML: true,
 			formatter: function (){
 				var p1=isHasElement(data[0][0],this.x);
-				var arg=data[0][1][p1]
+				var arg=data[0][1][p1];
+				var pids=data[0][2][p1];
 				var s='<small>' + this.x + 's</small><table>';
 				$.each(this.points, function (){
-					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
-						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
+					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>'
 				});
+				if(pids!=""){
+					s += '<tr><td style="color: ' + color + '">' + '进程数:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + pids +'</td>' + '</b></td></tr>';
+				};
 				if(arg!='null'){
 					s += '<tr><td style="color: ' + color + '">' + 'ARG:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + arg +'</td>' + '</b></td></tr>';
-				}
+				};
 				if(csvData.Window==1){
 					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
@@ -533,7 +542,7 @@ function meminfo(a){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -614,15 +623,19 @@ function meminfo2(a){
 			useHTML: true,
 			formatter: function (){
 				var p1=isHasElement(data[0][0],this.x);
-				var arg=data[0][1][p1]
+				var arg=data[0][1][p1];
+				var pids=data[0][2][p1];
 				var s='<small>' + this.x + 's</small><table>';
 				$.each(this.points, function (){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
+				if(pids!=""){
+					s += '<tr><td style="color: ' + color + '">' + '进程数:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + pids +'</td>' + '</b></td></tr>';
+				};
 				if(arg!='null'){
 					s += '<tr><td style="color: ' + color + '">' + 'ARG:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + arg +'</td>' + '</b></td></tr>';
-				}
+				};
 				if(csvData.Window==1){
 					var p=isHasElement(TotalData.Window[0],this.x);
 					if(p>=0){
@@ -632,7 +645,7 @@ function meminfo2(a){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -642,7 +655,7 @@ function meminfo2(a){
 }
 
 var fpsWindow=0;
-function fpsWindow(){
+function fpslist(){
 	var el=$("#fps_select").multiselect({
 		multiple: false,
 		noneSelectedText: "选择窗口",
@@ -723,7 +736,7 @@ function FPS(a) {
 						 '<tr><td style="word-break:keep-all; color: ' + color_t + '">Date_Time:</td><td style="text-align: right; color: '+ color + '"><b>' + data[2][1][p].replace(' ', '_') + '</b></td></tr></table>';
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -770,7 +783,7 @@ function curfreq(){
 			formatter: function (){
 				var s='<small>' + this.x + 's</small><table>';
 				$.each(this.points, function (){
-					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
+					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name.split("（")[0] + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
 				if(csvData.Window==1){
@@ -782,7 +795,7 @@ function curfreq(){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -805,6 +818,7 @@ function thermallist(){
 		placeholder: '输入关键字',
 		autoReset: true
 	});
+	var thermaldata=TotalData.thermalData;
 	for (var i=0; i < thermaldata[1].length; i++){
 		var textStr=thermaldata[1][i];
 		if(textStr.length >35)textStr=textStr.substr(0,25) + ".." + textStr.substr(-10,10);
@@ -871,7 +885,7 @@ function thermal(a){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -930,7 +944,7 @@ function gpufreq(){
 					}
 				}else{
 					s += '</table>';
-				}
+				};
 				return s;
 			}
 		},
@@ -949,6 +963,7 @@ function updatecharts(a){
 				cpus()
 			};
 		}else{
+			document.getElementById("cpus").style.display="none"
 			document.getElementById("cur_freq").style.display="";
 			curfreq()
 		};
@@ -1028,13 +1043,12 @@ function updatecharts(a){
 		if(csvData.fps == 0){
 			document.getElementById("fps_menu").style.display="none";
 			document.getElementById("FPS").style.display="none";
-			$("#fps_select").empty()
 		}else{
 			document.getElementById("fps_menu").style.display="";
 			document.getElementById("FPS").style.display="";
 			if(a==0){
 				$("#fps_select").empty();
-				fpsWindow();
+				fpslist();
 			};
 			FPS(fpsWindow)
 		};
