@@ -287,7 +287,7 @@ function cpuinfo(a){
 						}
 					};
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>';
-					if(pids!=""){
+					if(pids!=''&&pids!=null){
 						s += '<td style="text-align: left; color: '+ color + '"><b>' + this.y + "%(" + pids + "pids)" + '</b></td></tr>';
 					}else{
 						s += '<td style="text-align: left; color: '+ color + '"><b>' + this.y + '%</b></td></tr>';
@@ -527,7 +527,7 @@ function meminfo(a){
 				$.each(this.points, function (){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' + '<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>'
 				});
-				if(pids!=""){
+				if(pids!=''&&pids!=null){
 					s += '<tr><td style="color: ' + color + '">' + '进程数:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + pids +'</td>' + '</b></td></tr>';
 				};
 				if(arg!='null'){
@@ -630,7 +630,7 @@ function meminfo2(a){
 					s += '<tr><td style="color: ' + this.series.color + '">' + this.series.name + ':</td>' +
 						'<td style="text-align: left; color: '+ color + '"><b>' + this.y + '</b></td></tr>';
 				});
-				if(pids!=""){
+				if(pids!=''&&pids!=null){
 					s += '<tr><td style="color: ' + color + '">' + '进程数:</td>' +'<td style="text-align: left; color: '+ color + '"><b>' + pids +'</td>' + '</b></td></tr>';
 				};
 				if(arg!='null'){
