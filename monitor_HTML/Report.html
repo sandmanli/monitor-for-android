@@ -70,7 +70,11 @@ function ChangeCase(option){
 
 function charts(){
 	$.getScript(datajs,function(){
-		cpulist=[TotalData.cpuLine[0], TotalData.cpuLine[1], TotalData.cpuLine[2], TotalData.cpuLine[3], TotalData.cpuLine[4]];
+		var adds=5;
+		if(TotalData.cpuLine.length <5)adds=TotalData.cpuLine.length;
+		for (var i=0; i < adds; i++){
+			cpulist.push(TotalData.cpuLine[i]);
+		}
 		updatecharts(0)
 	})
 }
