@@ -69,6 +69,7 @@ function ChangeCase(option){
 }
 
 function charts(){
+	cpulist=[];
 	$.getScript(datajs,function(){
 		var adds=5;
 		if(TotalData.cpuLine.length <5)adds=TotalData.cpuLine.length;

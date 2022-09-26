@@ -8,6 +8,14 @@ fi
 #root
 root=`id|$bb grep -c root`
 
+check_csv(){
+if [ -f $1 ];then
+	if [ ! -z "`$bb tail $1 -c 1`" ];then
+		$bb sed -i '$d' $1
+	fi
+fi
+}
+
 getwindow(){
 	dumpsys input|$bb grep " name="|$bb awk -v OFS="," -v loop=$loop -v time=$uptime -v date="$date_time" -v csv="$monitor/windows.csv" '{ \
 		if($1~/displayId/){ \
@@ -348,26 +356,38 @@ while true;do
 	#cpu freq
 	if [ $cur_freq -eq 1 ];then
 		$bb awk -v cpus=$CPUS -v time=$uptime -v csv="$monitor/cur_freq.csv" '{split(FILENAME,N,"/");r[substr(N[6],4)]=$0/1000}END{R=r[0];for(i=1;i<cpus;i++)R=R","r[i];print time","R >>csv}' /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
+		check_csv $monitor/cur_freq.csv
 	fi
 	#thermal_zone
 	if [ $thermal -eq 1 ];then
 		$bb awk -v time=$uptime -v TZs="$thermal_zones" -v csv="$monitor/thermal.csv" 'BEGIN{split(TZs,tmp," ")}{split(FILENAME,N,"/");r[N[6]]=$0}END{for(i in tmp){if(R=="")R=r[tmp[i]]+0;else R=R","r[tmp[i]]+0};print time","R >>csv}'  $thermal_path
+		check_csv $monitor/thermal.csv
 	fi
 	#btm.csv
 	if [ $power -gt 0 ];then
 		dumpsys power|$bb awk -v OFS="," -v time=$uptime -v csv="$monitor/btm.csv" '$1~/mBatteryLevel=|mPlugType/{if($1~/mPlugType/)t=substr($1,11,length($1)-10);else l=substr($1,15,length($1)-14)}END{print time,l,t >>csv;}'
+		check_csv $monitor/btm.csv
 	fi
 	#windows.csv
 	getwindow
+	check_csv $monitor/windows.csv
 	#cpu
 	getCPU
+	check_csv $monitor/cpus.csv
 	getcpu
+	check_csv $monitor/cpu.csv
+	check_csv $monitor/cpuinfo.csv
 	getmem
+	check_csv $monitor/mem.csv
 	getvss
+	check_csv $monitor/meminfo2.csv
 	if [ $5 -ge 1 ];then
 		get_meminfo
+		check_csv $monitor/mem2.csv
+		check_csv $monitor/meminfo.csv
 	fi
 	get_package >>$monitor/meminfo.csv
+	check_csv $monitor/meminfo.csv
 	#stop
 	loop=$((loop+1))
 	if [ -f /data/local/tmp/stop ];then
